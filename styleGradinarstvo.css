@@ -1,0 +1,72 @@
+/* zadaca so gradinarstvo */
+body{
+   background:url(img/background.png) repeat-x;
+   width:600px;
+   margin:10px auto;
+   background-color:#014d5d;
+}
+#page a{
+	 text-decoration:none;
+	 color:#ffffff;
+	 font-size:16px;
+	}
+.topNaviagationLink{
+	padding-top:20px;
+	float:left;
+	padding-left:67px;
+}	
+#page a:hover{
+  font-weight:bold;
+  font-size:20px;
+}
+#mainPicture{
+	padding-top:46px;
+}
+#headerTitle{
+    color:white;
+	padding-left: 40px;
+    padding-top: 30px;
+    font-size: 25px;
+}
+#headerSubtext{
+	color: white;
+    padding-left: 57px;
+}
+.picture{
+ background:url(img/anoceanofsky.jpg) no-repeat; 
+ height:327px;
+ border:10px white solid;
+}
+.contentBox{
+   background-color:white;
+   margin-top:12px;
+   border:10px white solid;
+   color:#330066;
+   font-family:Times New Roman;
+}
+.innerBox{
+ background:url(img/content_back.png) repeat-x;
+}
+.contentTitle{
+	font-family:Georgia;
+	font-size:16px;
+	font-weight:bold;
+	color:#330066;
+	padding-top: 10px;
+	padding-left:5px;
+}
+.contentText{
+   padding:2px 0 0 5px;
+   
+}
+#footer{
+	background:url(img/footer.png) no-repeat;
+		color:#989898; 
+		padding-left:130px;
+		font-family:Georgia,sans-serif;
+}
+#footer a{
+	text-decoration:none;
+	color:#989898; 
+	font-size:13px;
+}
