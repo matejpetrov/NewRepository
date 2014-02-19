@@ -95,8 +95,20 @@ class Model_post_formulari extends CI_Model{
 		else return false;
 		
 	}
-
 	
+	public function dodadi_dnevno_sledenje($poseta) {
+		if ($this->db->insert ( 'poseta', $poseta )) {
+			return true;
+		} else
+			return false;
+	}
+	
+	public function dodadi_evaluacija($evaluacija) {
+		if ($this->db->insert ( 'evaluacija', $evaluacija )) {
+			return true;
+		} else
+			return false;
+	}
 	//---------------------------------------------------------
 	//funckii za edit
 	
@@ -145,6 +157,17 @@ class Model_post_formulari extends CI_Model{
 	}
 	
 	
+	public function update_dnevno_sledenje($data, $id) {
+		$this->db->where ( 'id_poseta', $id );
+		$result = $this->db->update ( 'poseta', $data );
+		return $result;
+	}
+	
+	public function update_evaluacija($evaluacija, $id) {
+		$this->db->where ( 'id_evaluacija', $id );
+		$result = $this->db->update ( 'evaluacija', $evaluacija );
+		return $result;
+	}
 }
 
 ?>

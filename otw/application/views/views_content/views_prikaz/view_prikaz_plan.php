@@ -1,13 +1,4 @@
-<!DOCTYPE html> 
 
-<html> 
-	<head> 
-		<title>Bootstrap 101 Template</title> 
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Bootstrap --> 
-		<link href="<?php echo base_url();?>assets/css/bootstrap.min.css" type="text/css" rel="stylesheet" media="screen"/> 
-	</head> 
-	
-	<body> 
 	
 	<pre>
 		<?php 
@@ -47,4 +38,4 @@
 						
 			<input type="submit" name="editPlan" id="editPlan" value="Промени план">
 		
-		<?php echo form_close();?> </body>
+		<?php echo form_close();?> 

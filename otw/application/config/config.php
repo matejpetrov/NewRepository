@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://localhost/otw/';
+$config['base_url']	= 'http://localhost/workspace/GitHub/otw_matej_3/';
 
 /*
 |--------------------------------------------------------------------------

@@ -6,7 +6,7 @@
 class Controller_klienti_main extends CI_Controller{
 	
 	public function index(){
-		$this->view_dodadi_procenka();
+		$this->view_prikaz_procenka(1);
 	}
 	
 	//----------------------------------------------------------------------------------------------------------------------------
@@ -346,7 +346,129 @@ class Controller_klienti_main extends CI_Controller{
 		}
 	}
 	
+	public function view_dnevno_sledenje(){
+		$data["errors"]="";
+		$this->load->view ( 'views_content/views_dodavanje/view_dodadi_dnevno_sledenje', $data );
+	}
 	
+	public function dnevno_sledenje() {
+		foreach ( $_POST as $key => $value ) {
+			$post [$key] = $this->input->post ( $key );
+		}
+		$date_den = $post ["data_den"];
+		$date_mesec = $post ["data_mesec"];
+		$date_godina = $post ["data_godina"];
+		$cel = $post ["cel"];
+		$realizacija = $post ["realizacija"];
+		$postignuvanje = $post ["postignuvanje"];
+		$poteskotii = $post ["poteskotii"];
+		$plan_nareden_pat = $post ["plan"];
+	
+		// za fajlot podesuvanja
+		$config ['upload_path'] = './dokumenti/';
+		$config ['allowed_types'] = 'pdf|ppt|docx';
+		$config ['max_size'] = '800';
+	
+		$this->load->library ( 'upload', $config );
+		$field_name = "upload"; // od koj upload input da zeme default e userfile
+	
+		if (! empty ( $_FILES ['upload'] ['name'] )) { // prvo proverka dali e prazen zosto nemora da stavat fajlt
+				
+			if (! $this->upload->do_upload ( $field_name )) {
+				// $data['errors']=array();
+				$data ['errors'] = $this->upload->display_errors ();
+	
+				$this->load->view ( 'views_content/views_dodavanje/view_dodadi_dnevno_sledenje', $data );
+				return;
+			}
+		}
+		$upload_data = $this->upload->data ();
+		$file = $upload_data ["file_name"];
+		$datum = $date_godina . "-" . $date_mesec . "-" . $date_den;
+		$poseta = array (
+				'klient_id' => "1", // ova kje treba da se zema od query strin ili nesto
+				'datum' => $datum,
+				'cel' => $cel,
+				'realizacija' => $realizacija,
+				'postignuvanja' => $postignuvanje,
+				'poteskotii' => $poteskotii,
+				'plan_naredna_poseta' => $plan_nareden_pat,
+				'file' => $file,
+				'kategorija' => "kategorija"
+		);
+		$this->load->model ( "models_post/model_post_formulari", "model_klienti" );
+	
+		$result = $this->model_klienti->dodadi_dnevno_sledenje ( $poseta );
+	
+		if ($result) {
+				
+			$this->load->view ( 'view_profil' );
+		} else {
+			$data ['errors'] = "Имаше грешка во внесувањето на оваа посета. Ве молам обидете се повторно подоцна";
+				
+			$this->load->view ( 'views_content/views_dodavanje/view_dodadi_dnevno_sledenje', $data );
+		}
+	}
+	
+	public function view_dodadi_evaluacija($id_korisnik = '1') {
+		$this->load->model ( 'models_get/model_get','model_klienti' );
+		$data = $this->model_klienti->get_evaluacija_korisnik_info ( $id_korisnik );
+		
+		
+	
+		$vraboteni =$this->get_vraboteni();
+		//print_r($vraboteni);
+	
+		$data ['vraboteni'] = $vraboteni;
+		$data ['id_korisnik'] = $id_korisnik;
+		$this->load->view ( 'views_content/views_dodavanje/view_dodadi_evaluacija', $data );
+	}
+	
+	public function post_dodadi_evaluacija() {
+		foreach ( $_POST as $key => $value ) {
+			$post [$key] = $this->input->post ( $key );
+		}
+		// print_r($post);
+		$korisnik = $post ['id_korisnik'];
+		$period = $post ['period'];
+		$evauliral = $post ['vraboteni'];
+		$raboti_so = $post ['raboti_so'];
+		$date_den = $post ["data_den"];
+		$date_mesec = $post ["data_mesec"];
+		$date_godina = $post ["data_godina"];
+		$planirani = $post ["planirani"];
+		$ostvareni_celi = $post ["ostvareni_celi"];
+		$narativen = $post ["narativen"];
+		$novi_celi = $post ["novi_celi"];
+		$preporaki = $post ["preporaki"];
+	
+		$datum = $date_godina . "-" . $date_mesec . "-" . $date_den;
+		$eval = array (
+				'klient_id' => $korisnik,
+				'period' => $period,
+				'datum' => $datum,
+				'evaluiral' => $evauliral,
+				'planirani_celi' => $planirani,
+				'ostvareni_celi' => $ostvareni_celi,
+				'narativen_izvestaj' => $narativen,
+				'novi_celi' => $novi_celi,
+				'preporaki' => $preporaki
+		);
+	
+		$this->load->model ( "models_post/model_post_formulari","model_klienti" );
+		
+	
+		$result = $this->model_klienti->dodadi_evaluacija ( $eval );
+	
+		if ($result) {
+				
+			$this->load->view ( 'view_profil' );
+		} else {
+			$data ['errors'] = "Имаше грешка во внесувањето на оваа посета. Ве молам обидете се повторно подоцна";
+				
+			$this->load->view ( 'view_dodadi_evaluacija', $data );
+		}
+	}
 	//--------------------------------------------------------------------------------------------------------------------------
 	//views za edit
 	
@@ -575,7 +697,149 @@ class Controller_klienti_main extends CI_Controller{
 		}
 	}
 	
+	public function edit_dnevno_sledenje($id = '1') {
+		$this->load->model ( '/models_get/model_get','model_klienti' );
+		$data = $this->model_klienti->get_dnevno_sledenje ( $id );
+		
+		$datum = explode ( "-", $data ['datum'] );
+		$data ['year'] = $datum ['0'];
+		$data ['month'] = $datum ['1'];
+		$data ['day'] = $datum ['2'];
 	
+		$data ['errors'] = "";
+		$data['id']=$id;
+		$this->load->view ( 'views_content/views_edit/view_edit_dnevno_sledenje', $data );
+		// echo $var;
+	}
+
+	public function post_edit_dnevno_sledenje($id = '1') {
+		foreach ( $_POST as $key => $value ) {
+			$post [$key] = $this->input->post ( $key );
+		}
+		$date_den = $post ["data_den"];
+		$date_mesec = $post ["data_mesec"];
+		$date_godina = $post ["data_godina"];
+		$cel = $post ["cel"];
+		$realizacija = $post ["realizacija"];
+		$postignuvanje = $post ["postignuvanje"];
+		$poteskotii = $post ["poteskotii"];
+		$plan_nareden_pat = $post ["plan"];
+	
+		$config ['upload_path'] = './dokumenti/';
+		$config ['allowed_types'] = 'pdf|ppt|docx';
+		$config ['max_size'] = '800';
+	
+		$this->load->library ( 'upload', $config );
+		$field_name = "upload"; // od koj upload input da zeme default e userfile
+	
+		if (! empty ( $_FILES ['upload'] ['name'] )) { // prvo proverka dali e prazen zosto nemora da stavat fajlt
+				
+			if (! $this->upload->do_upload ( $field_name )) {
+				// $data['errors']=array();
+				$data ['errors'] = $this->upload->display_errors ();
+				// $this->load->view('view_edit_dnevno_sledenje', $data);
+				return;
+			}
+		}
+	
+		$upload_data = $this->upload->data ();
+		$file = $upload_data ["file_name"];
+		$data ['file'] = $file;
+		// $this->load->view('view_edit_dnevno_sledenje', $data);
+	
+		$datum = $date_godina . "-" . $date_mesec . "-" . $date_den;
+		$poseta = array (
+				'datum' => $datum,
+				'cel' => $cel,
+				'realizacija' => $realizacija,
+				'postignuvanja' => $postignuvanje,
+				'poteskotii' => $poteskotii,
+				'plan_naredna_poseta' => $plan_nareden_pat,
+				'file' => $file,
+				'kategorija' => "kategorija"
+		);
+		$this->load->model ( "models_post/model_post_formulari","model_klienti" );
+	
+		$result = $this->model_klienti->update_dnevno_sledenje ( $poseta, $id );
+	
+		if ($result) {
+				
+			$this->load->view ( 'view_profil' );
+		} else {
+			$data ['errors'] = "Имаше грешка во внесувањето на оваа посета. Ве молам обидете се повторно подоцна";
+				
+			$this->load->view ( 'views_content/views_edit/view_edit_dnevno_sledenje', $data );
+		}
+	}
+	
+	public function edit_evaluacija($id = '1') {
+		$this->load->model ( 'models_get/model_get','model_klienti' );
+		$data = $this->model_klienti->get_evaluacija ( $id );
+	
+	
+	
+		$datum = explode ( "-", $data ['datum'] );
+		$data ['year'] = $datum ['0'];
+		$data ['month'] = $datum ['1'];
+		$data ['day'] = $datum ['2'];
+		$data ['errors'] = "";
+	
+		$id_korisnik = $data ['klient_id'];
+		
+		$this->load->model ( 'models_get/model_get','model_klienti' );
+		$data_klient = $this->model_klienti->get_evaluacija_korisnik_info ( $id_korisnik );
+		
+		
+	
+		$vraboteni =$this->get_vraboteni();
+		
+		$data ['klient'] = $data_klient ['klient'];
+		$data ['vraboten'] = $data_klient ['vraboten'];
+	
+	
+		$data ['vraboteni'] = $vraboteni;
+		$data ['id_korisnik'] = $id_korisnik;
+		$data['id']=$id;
+		// mozno e idto vo hidden da go cuvam da treba ili neso takvo ?????
+		$var = $this->load->view ( 'views_content/views_edit/view_edit_evaluacija', $data, TRUE );
+		echo $var;
+	}
+
+	public function post_edit_evaluacija($id = '1') {
+		// !!!!!! ДА СЕ СМЕНИ varchar za period!!!!
+		if (isset ( $_POST ['submitEval'] )) {
+				
+			foreach ( $_POST as $key => $value ) {
+				$post [$key] = $this->input->post ( $key );
+			}
+				
+			$datum = $post ['data_den'] . "-" . $post ['data_mesec'] . "-" . $post ['data_godina'];
+				
+			$evaluacija = array (
+					'datum' => $datum,
+					'klient_id' => $post ['id_korisnik'],
+					'period' => $post ['period'],
+					'evaluiral' => $post ['vraboteni'],
+					'planirani_celi' => $post ['planirani'],
+					'ostvareni_celi' => $post ['ostvareni_celi'],
+					'narativen_izvestaj' => $post ['narativen'],
+					'novi_celi' => $post ['novi_celi'],
+					'preporaki' => $post ['preporaki']
+			);
+			$this->load->model ( "models_post/model_post_formulari","model_klienti" );
+				
+			$result = $this->model_klienti->update_evaluacija ( $evaluacija, $id );
+				
+			if ($result) {
+	
+				$this->load->view ( 'view_profil' );
+			} else {
+				$data ['errors'] = "Имаше грешка во внесувањето на оваа посета. Ве молам обидете се повторно подоцна";
+	
+				$this->load->view ( 'view_edit_evaluacija', $data );
+			}
+		}
+	}
 	
 	//--------------------------------------------------------------------------------------------------------------------------
 	//views za prikaz
@@ -595,16 +859,18 @@ class Controller_klienti_main extends CI_Controller{
 			
 			
 			
-		$this->load->view('views_content/views_prikaz/view_prikaz_plan', $data);
+		$var=$this->load->view('views_content/views_prikaz/view_prikaz_plan', $data,TRUE);
+		
+		return $var;
 		
 	}
 	
 	
 	public function view_prikaz_procenka($id_klient){
 		
-		$this->load->model('models_get/model_get', 'model_get');
+		$this->load->model('models_get/model_get', 'model');
 			
-		$informacii_procenka = $this->model_get->get_prikaz_procenka($id_klient);
+		$informacii_procenka = $this->model->get_prikaz_procenka($id_klient);
 			
 		$data['informacii_procenka'] = $informacii_procenka;
 
@@ -612,13 +878,125 @@ class Controller_klienti_main extends CI_Controller{
 		
 		$data['errors'] = "";
 			
-		$this->load->view('views_content/views_prikaz/view_prikaz_procenka', $data);
+		$var=$this->load->view('views_content/views_prikaz/view_prikaz_procenka', $data,TRUE);
+		
+		print_r($informacii_procenka);
+		//echo $var;
+		return $var;
+		
 	}
 
+	public function view_prikaz_dnevno_sledenje($id = '2') {//ova e id na dnevno sledenje
+		// dali da pravime join so klienti za i informacii
+		// za klientot da kazuvame????
+		// $id='1';//ova kje bide neso od query
+		// $data=array();
+		$this->load->model ( '/models_get/model_get','model_klienti' );
+		$data = $this->model_klienti->get_dnevno_sledenje ( $id );
+		
+		// $var="";
+		if (! (isset ( $_POST ['edit'] ))) {
+			$var = $this->load->view ( 'views_content/views_prikaz/view_prikaz_dnevno_sledenje', $data, TRUE );
+			echo $var; // ova e za pdfot
+		}
+		$file = $data ['file'];
+		$path = "/dokumenti/$file";
+		if (isset ( $_POST ['download'] )) {
+			$this->load->helper ( 'download' );
+			force_download ( $path, $file );
+		} else if (isset ( $_POST ['edit'] )) {
+			$this->edit_dnevno_sledenje ($id);
+		} else if (isset ( $_POST ['pdf'] )) {
+			$this->pdf ( $var );
+		}
+	}
+	
+	public function prikaz_evaluacija($id = '1') {
+	$this->load->model ( 'models_get/model_get','model_klienti' );
+		$data = $this->model_klienti->get_evaluacija ( $id );
+	
+		$data ['errors'] = "";
+		$id_korisnik = $data ['klient_id'];
+		
+		$this->load->model ( 'models_get/model_get','model_klienti' );
+		$data_klient = $this->model_klienti->get_evaluacija_korisnik_info ( $id_korisnik );
+		
+		$vraboteni =$this->get_vraboteni();
+		
+		$data ['klient'] = $data_klient ['klient'];
+		$data ['vraboten'] = $data_klient ['vraboten'];
 	
 	
+		$data ['vraboteni'] = $vraboteni;
+		$data ['id_korisnik'] = $id_korisnik;
+		$data['id']=$id;
+		// mozno e idto vo hidden da go cuvam da treba ili neso takvo ?????
+		$var = $this->load->view ( 'views_content/views_prikaz/view_prikaz_evaluacija', $data, TRUE );
+		if (! (isset ( $_POST ['edit'] ))) {
+			echo $var;
+		}
+		else if ( isset ( $_POST ['edit'] )){
+			$this->edit_evaluacija($id);
+		}
+		if (isset ( $_POST ['pdf'] )) {
+			$this->pdf ( $var );
+		}
+		return $var;
+	}
+	
+	public function prikaz_priem($id = '1') {
+		$this->load->model ( 'modeles_get/model_get','model_klienti' );
+		$query = $this->model_klienti->zemi_priem ( $id );
+		$data = $query;
+		$pol1 = array ();
+		$pol1 [0] = '-';
+		$pol1 [1] = 'male';
+		$pol1 [2] = 'female';
+		$data ['pol1'] = $pol1;
+		$data ["vraboteni"] = $this->get_vraboteni ();
+		$var = $this->load->view ( 'views_content/views_prikaz/view_prikaz_priem', $data, TRUE );
+		return $var;
+	}
 	
 	
+	public function prikaz_klienti($id = "1", $tab="osnovni_info") {
+		$this->load->model ( 'models_get/model_get','model_klienti' );
+		$evaluacii = $this->model_klienti->site_evaluacii ( $id );
+		$dnevni = $this->model_klienti->site_dnevni ( $id );
+		
+		$data['tab']=$tab;
+		$data ["evaluacii"] = $evaluacii;
+		$data ["dnevni"] = $dnevni;
+	
+		if(isset( $_POST['edit_priem'] )){
+			$data ["priem"] = $this->edit_priem ( $id );
+			$data["tab"]="osnovni_info";
+		}else{
+			$data ["priem"] = $this->prikaz_priem ( $id );
+		}
+		if(isset( $_POST['edit_plan'] )){
+			$data ["plan"] = "";//$this->edit_plan ( $id );
+			$data["tab"]="plan";
+		}else{
+			$data ["plan"] = $this->view_prikaz_plan ( $id );
+		}
+		if(isset( $_POST['editProcenka'] )){
+			$data ["procenka"] = "";//$this->edit_plan ( $id );
+			$data["tab"]="procenka";
+		}else{
+			$data ["procenka"] = $this->view_prikaz_procenka($id);
+		}
+		if(isset( $_POST['pdf_priem'] )){
+			$var=$this->prikaz_priem ( $id );
+			$this->pdf($var);
+		}
+		$data["prv"]=TRUE;
+	
+		$var=$this->load->view ( "views_content/views_prikaz/view_prikaz_klienti", $data, TRUE);
+	
+		$data1["var"]=$var;
+		$this->load->view ("views_content/views_prikaz/master",$data1);
+	}
 	
 	//----------------------------------------------------------------------------------------------------------------------
 	//informacii
