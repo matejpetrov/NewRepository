@@ -25,9 +25,9 @@ class Model_get_nadvoresni extends CI_Model{
 	
 	//funckija vo koja ke pristapam do baza i ke gi zemam site informacii za terapevtite koi mi se vneseni, vklucuvajki ja i 
 	//institucijata vo koja rabotat. Treba da upotrebam join za polesen da mi e pristapot do institucijata.
-	public function get_terapevi_everything(){				
+	public function get_terapevi_everything(){
 		
-		$this->db->select('t.id_terapevt, t.terapevt_ime_prezime, t.mail, t.telefon, i.ime_institucija');
+		$this->db->select('t.id_terapevt, t.terapevt_ime_prezime, t.mail, t.telefon, t.institucija, i.ime_institucija');
 		
 		$this->db->from('terapevt t');
 		
@@ -41,8 +41,18 @@ class Model_get_nadvoresni extends CI_Model{
 			//go konvertiram rezultatot za eden terapevt od stdClass vo array, za da mozam polesno da pristapuvam do podatocite.
 			$row1 = (array)$row;
 			
-			//go dodavam vo glavnata lista koja ke ja vratam do controller-ot.
-			array_push($result, $row1);			
+			if($row1['mail'] == ""){
+				$row1['mail'] = "/";
+			}
+			
+			if($row1['telefon'] == ""){
+				$row1['telefon'] = "/";
+			}
+						
+			
+			//go dodavam vo glavnata lista koja ke ja vratam do controller-ot. Eden element od listata ke mozam da pristapam preku
+			//id-to na terapevtot.
+			$result[$row->id_terapevt] = $row1;			
 		}
 		
 		return $result;
