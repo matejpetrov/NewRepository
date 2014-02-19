@@ -39,7 +39,7 @@ function dodadi_nov_terapevt_AJAX(){
     //ke gi zemam site promenlivi koi gi vnel vraboteniot za noviot terapevt za da mozam da gi pratam vo request objektot 
     //preku AJAX.
 	var controller = 'controller_klienti_nadvoresni';
-	var base_url = 'http://localhost/GitHub/NewRepository/otw/';
+	var base_url = 'http://localhost/workspace/GitHub/NewRepository/otw/';
 	
 	
     var ime_prezime = document.getElementById("ime_prezime").value;
@@ -108,7 +108,7 @@ function set_terapevt_info(id, institucija){
 function edit_terapevt_AJAX(){
 	
 	var controller = 'controller_klienti_nadvoresni';
-	var base_url = 'http://localhost/GitHub/NewRepository/otw/';
+	var base_url = 'http://localhost/workspace/GitHub/NewRepository/otw/';
 	var edit_terapevt = '/edit_terapevt/';
 	
 	var id = document.getElementById("id_terapevt").value;
