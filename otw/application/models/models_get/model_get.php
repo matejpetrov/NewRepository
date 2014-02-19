@@ -23,6 +23,21 @@ class Model_get extends CI_Model{
 		return $result;
 	}
 	
+	public function get_poprecenosti_klient($klient_id){
+	
+		$this->db->select('tip_poprecenost');
+			
+		$query_poprecenost = $this->db->get_where('korisnik_poprecenost', array('klient_id' => $klient_id));
+			
+		$array_poprecenost = array();
+			
+		foreach($query_poprecenost->result() as $row){
+			array_push($array_poprecenost, $row->tip_poprecenost);
+		}
+	
+		return $array_poprecenost;
+	
+	}
 	//funckija koja gi zema site tipovi na obrazovanie od baza
 	public function get_obrazovanie(){
 	
@@ -135,7 +150,7 @@ class Model_get extends CI_Model{
 	//za terapevtot treba da zememe period koga posetuval, kontakt i institucija vo koja pripaga.
 	public function get_prikaz_procenka($id_klient){
 		
-		$rez=$this->db->query("SELECT k.ime_prezime, k.datum_na_procenka, k.motorika, k.kognitivni_spos, k.govor_komunikacija, k.pismenost,
+	/*	$rez=$this->db->query("SELECT k.ime_prezime, k.datum_na_procenka, k.motorika, k.kognitivni_spos, k.govor_komunikacija, k.pismenost,
 				k.odnesuvanje, k.rizici, k.opkruzuvanje, k.interesi, k.kompjuterski_vestini, k.nastavnik, v.ime_prezime as vraboten_ime_prezime, n.nastavnik_ime_prezime
 				FROM klient k, vraboten v, nastavnik n
 				WHERE k.procenka_napravil = v.id AND n.id_nastavnik = k.nastavnik AND k.id='" .$id_klient. "'" 
@@ -153,20 +168,37 @@ class Model_get extends CI_Model{
 		
 		$query = $this->db->get();
 		*/
-		print_r($rez);
+		//print_r($rez);
+		
+		
+
+		$this->db->select('k.ime_prezime, k.datum_na_procenka, k.motorika, k.kognitivni_spos, k.govor_komunikacija, k.pismenost,
+				k.odnesuvanje, k.rizici, k.opkruzuvanje, k.interesi, k.kompjuterski_vestini, k.nastavnik, v.ime_prezime as
+				vraboten_ime_prezime, n.nastavnik_ime_prezime');
+		
+		$this->db->from('klient k');
+		
+		$this->db->join('vraboten v', 'k.procenka_napravil = v.id');
+		
+		$this->db->join('nastavnik n', 'n.id_nastavnik = k.nastavnik');
+		
+		$this->db->where('k.id', $id_klient);
+		
+		$query = $this->db->get();
+		
 		$result = array();
 		
-		foreach($rez->result() as $row){
+		foreach($query->result() as $row){
 			$result = (array)$row;
 		}
 		
 		$result['terapevti'] = $this->get_terapevti_klient($id_klient);
 		
 		return $result;
+		
+		
 	}
-	public function get_prikaz_procenka2($id_klient){
-	
-	}
+
 	
 	//funckija vo koja gi zemam terapevtite za klientot cie id go davam kako argument. Ke go koristam za da gi prikazam iminjata 
 	//na terapevtite koga ke pravam prikaz na formata za procenka za klient.
@@ -284,6 +316,80 @@ class Model_get extends CI_Model{
 		} else
 			return false;
 	}
+
+	public function get_klienti_za_lista(){
+		//od klientot gi selektiram negovoto id, imeto i prezimeto, tipot na poseta vo otw i vraboteniot so koj raboti.
+		$this->db->select('k.id, k.ime_prezime, k.tip_poseta, k.raboti_so, v.ime_prezime as raboti_so_ime');
+		
+		$this->db->from('klient k');
+		
+		$this->db->join('vraboten v', 'k.raboti_so = v.id');
+		
+		$query = $this->db->get();
+	
+		$result = array();
+	
+	
+		//pristapuvam do sekoj klient koj e zemen od baza, i go zemam imeto na vraboteniot koj raboti so nego
+		//za da mozam da go prikazam imeto, a ne negovoto id i isto taka pristapuvam.
+		foreach ($query->result() as $row){
+			$row1=(array)$row;
+			$id=$row1['id'];
+			$result[$id]=$row1;
+			$result[$id]['poprecenosti']=$this->get_poprecenosti_klient($id);
+		}
+	/*
+				
+			$ime_vraboten = $this->get_vraboten_za_klient($pom[$i]->raboti_so);
+	
+			$array_poprecenost = $this->get_poprecenosti_klient($pom[$i]->id);
+				
+			//dokolku imame poveke od edna poprecenost, togas treba da prikazeme, kombinirana, no sepak ke gi zacuvame
+			//za da mozeme da gi prikazeme tocno koi poveke se selektirani.
+			if(count($array_poprecenost) > 1){
+				$poprecenost = "комбинирана";
+			}
+			else if(count($array_poprecenost) == 1){
+				$poprecenost = $array_poprecenost;
+			}
+	
+			//ovoj uslov e malku glupav, bidejki mora da imam selektirano poprecenost, inaku nema da ima potreba klientot
+			//da doaga vo ustanovata. Razmilsi go malku
+			//*********************************************************
+			else if(count($array_poprecenost) == 0){
+				$poprecenost = '/';
+			}
+				
+			//dodavam nov atribut vo stdObject
+			$pom[$i]->ime_vraboten = $ime_vraboten;
+				
+			//dodavam uste dva atributi, eden ke gi sodrzi originalnite poprecenosti, a vtoriot dokolku ima poveke ke bide
+			//kombiniranata, vo sprotivnoke bide istata kako originalnata poprecenost
+			$pom[$i]->poprecenost = $poprecenost;
+				
+	
+			//bidejki zemam cel red od baza, kako rezultat mi se vraka stdObject, instanca od stdClass.
+			//Vsusnost jas vo array-ot result ke imam lista od objekti, koi moze da gi pristapam kako obicen clen vo lista
+			//a potoa so upotreba na -> da pristapam i do nekoe svojstvo od samiot objekt, svojstvata se vsusnost
+			//redovite od baza. Pr: $result[0]->terapevt_ime_prezime.
+			array_push($result, $pom[$i]);
+		}
+	
+		//vrakam array od site klienti, so del od informaciite.
+		 * 
+		 */
+		return $result;
+	}
+
+
+
+
 }
+
+
+
+
+
+
 
 ?>

@@ -15,40 +15,8 @@ class Controller_klienti_main extends CI_Controller{
 	//funckija vo koja gi zemam site potrebni informacii koi mu trebaat na view-to za da se prikaze formata za priem. 	
 	public function view_dodadi_korisnik(){
 	
-		$denovi = array();
-		$meseci = array();
-		$godini = array();
-		$godiniPriem = array();
-		$pol = array();
-	
-		$denovi[0] = "-";
-		for($i=1;$i<=31;$i++){
-			array_push($denovi, $i);
-		}
-	
-		$meseci[0] = "-";
-		$meseci[1] = "Јануари";
-		$meseci[2] = "Февруари";
-		$meseci[3] = "Март";
-		$meseci[4] = "Април";
-		$meseci[5] = "Мај";
-		$meseci[6] = "Јуни";
-		$meseci[7] = "Јули";
-		$meseci[8] = "Август";
-		$meseci[9] = "Септември";
-		$meseci[10] = "Октомври";
-		$meseci[11] = "Ноември";
-		$meseci[12] = "Декември";
-	
-	
-		$tekovenDatum = date('d-m-Y');
-	
-		$tekovnaGodina = date('Y');
-		$godini[0] = "-";
-		for($j=1960;$j<$tekovnaGodina;$j++){
-			//key e godinata i value e godinata, za da mi bide polesno za vnesuvanje vo baza.
-			$godini[$j] = $j;
-		}
+		$data=$this->get_denovi_meseci();
+		
 	
 		$pol[0] = 'м';
 		$pol[1] = 'ж';
@@ -71,11 +39,7 @@ class Controller_klienti_main extends CI_Controller{
 		$data['obrazovanie'] = $obrazovanie;
 	
 		$data['poseta'] = $poseta;
-	
-		$data['tekovenDatum'] = $tekovenDatum;
-		$data['denovi'] = $denovi;
-		$data['meseci'] = $meseci;
-		$data['godini'] = $godini;		
+		
 		$data['pol'] = $pol;
 	
 		$data['errors'] = "";
@@ -476,16 +440,17 @@ class Controller_klienti_main extends CI_Controller{
 	//za klient cie id go dobivam kako parametar. Ke pristapam do model_get i tamu ke ja povikam funckijata get_plan
 	public function view_edit_plan($id_klient){
 		
-		$this->load->model('models_get/model_get', 'model');
+		$this->load->model('models_get/model_get', 'model_get');
 			
-		$informacii_plan = $this->model->get_plan($id_klient);
+		$informacii_plan = $this->model_get->get_plan($id_klient);
 			
 		$data['vraboteni'] = $this->get_vraboteni();
 		$data['informacii_plan'] = $informacii_plan;
 		$data['id_klient'] = $id_klient;
 		$data['errors'] = "";
 		
-		$this->load->view('views_content/views_edit/view_edit_plan', $data);
+		$var = $this->load->view('views_content/views_edit/view_edit_plan', $data,TRUE);
+		return $var;
 	}
 		
 	
@@ -530,7 +495,8 @@ class Controller_klienti_main extends CI_Controller{
 		//dokolku uspesno napravam promeni na planot, togas ke prenasocam kon view-to vo koe ke go prikazam planot.
 		if($this->model->edit_plan($id_klient, $plan)){
 	
-			$this->view_prikaz_plan($id_klient);			
+			//$this->view_prikaz_plan($id_klient);
+			$this->prikaz_klienti($id_klient,$plan);
 		}
 	
 		else{
@@ -538,7 +504,7 @@ class Controller_klienti_main extends CI_Controller{
 			$data['informacii_plan'] = $plan;
 			$data['errors'] = "Во моментов не може да се направат промени за планот, Ве молиме стиснете на Откажи ипробајте подоцна";
 			
-			$this->load->view('views_content/views_edit/view_edit_plan', $data);
+		
 		}
 	
 	
@@ -573,7 +539,9 @@ class Controller_klienti_main extends CI_Controller{
 		
 		$data['errors'] = "";
 			
-		$this->load->view('views_content/views_edit/view_edit_procenka', $data);
+		$var=$this->load->view('views_content/views_edit/view_edit_procenka', $data, TRUE);
+		return $var;
+		
 	}
 
 	
@@ -786,7 +754,6 @@ class Controller_klienti_main extends CI_Controller{
 	
 		$id_korisnik = $data ['klient_id'];
 		
-		$this->load->model ( 'models_get/model_get','model_klienti' );
 		$data_klient = $this->model_klienti->get_evaluacija_korisnik_info ( $id_korisnik );
 		
 		
@@ -803,6 +770,7 @@ class Controller_klienti_main extends CI_Controller{
 		// mozno e idto vo hidden da go cuvam da treba ili neso takvo ?????
 		$var = $this->load->view ( 'views_content/views_edit/view_edit_evaluacija', $data, TRUE );
 		echo $var;
+		//return $var;
 	}
 
 	public function post_edit_evaluacija($id = '1') {
@@ -841,6 +809,123 @@ class Controller_klienti_main extends CI_Controller{
 		}
 	}
 	
+	public function edit_priem($id='1'){
+		$this->load->model ( 'models_get/model_get','model_klienti' );
+		$query = $this->model_klienti->zemi_priem ( $id );
+		$data1 = $query;
+		$datum=explode("-", $data1['datum_raganje']);
+		$data1['den_r']=$datum[2];
+		$data1['mesec_r']=$datum[1];
+		$data1['godina_r']=$datum[0];
+		$data2=$this->get_denovi_meseci();
+		$data=array_merge($data1,$data2);
+		$pol[0] = 'м';
+		$pol[1] = 'ж';
+		$data['pol']=$pol;
+		$data ["vraboteni"] = $this->get_vraboteni ();
+		$data["obrazovanie"]=$this->get_obrazovanie();
+		$data["poprecenosti_site"]=$this->get_poprecenosti();
+		$data["poseta"]=$this->get_tipPoseta();
+		$data["id"]=$id;
+		//echo "<pre>";
+			//print_r($data);
+		//echo "</pre>";
+		
+		$var=$this->load->view("views_content/views_edit/view_edit_priem", $data,TRUE);
+		return $var;
+	}
+
+	public function post_edit_priem(){
+		foreach ( $_POST as $key => $value ) {
+			$post [$key] = $this->input->post ( $key );
+		}
+	
+		$this->load->model('models_post/model_post_formulari','model_klienti');
+	
+	
+		foreach($_POST as $key => $value){
+			$post[$key] = $value;
+		}
+	
+	
+		$den = $post['denovi'];
+		$mesec = $post['meseci'];
+		$godina = $post['godini'];
+	
+		$datum_raganje = $godina."-".$mesec."-".$den;
+	
+	
+	
+		$data['poprecenosti'] = $post['poprecenosti'];
+	
+		$pol = -1;
+	
+		if($post['pol'] == 1){
+			$pol = 0;
+		}
+	
+		else if($post['pol'] == 2){
+			$pol = 1;
+		}
+		$id=$post['id'];
+	
+		$klient = array(
+					
+				'ime_prezime' => $post['ime_prezime'],
+				'datum_raganje' => $datum_raganje,
+				'pol' => $pol,
+				'adresa' => $post['adresa'],
+				'majka' => $post['majka'],
+				'zanimanje_m' => $post['zanimanje_m'],
+				'vraboten_m' => $post['vraboten_m'],
+				'tel_m' => $post['tel_m'],
+				'tatko' => $post['tatko'],
+				'zanimanje_t' => $post['zanimanje_t'],
+				'vraboten_t' => $post['vraboten_t'],
+				'tel_t' => $post['tel_t'],
+				'tip_poseta' => $post['poseta'],
+				'tip_obrazovanie' => $post['obrazovanie'],
+				'upaten_od' => $post['upaten_od'],
+				'primen_od' => $post['vraboteni'],
+				'ocekuvanja_klient' => $post['ocekuvanja_klient'],
+				'ocekuvanja_roditel' => $post['ocekuvanja_roditel'],
+				'komentar' => $post['komentar'],
+				'datum_prva_poseta' => $post['datum_prva_poseta'],
+				'raboti_so' => $post['raboti_so']
+		);
+	
+		$result = $this->model_klienti->post_edit_priem($klient,$id);
+		if($result != false){
+	
+	
+			if($this->model_klienti->edit_poprecenost($id, $post['poprecenosti'])){
+					
+				$data['podatoci_klient'] = $klient;
+	
+				$this->prikaz_klienti($id,"osnovni_info");
+			}
+			else {
+				$data['errors'] = "Попреченостите не може да се додадат во базата,
+						ве молиме пробајте подоцна";
+					
+				//*******************************************************
+				//treba ova da go smenam da ne mi prenasocuva na istata stranica
+				echo "Greska poprecenosti";
+			}
+	
+		}
+	
+		else{
+			$data['errors'] = "Клиентот не беше успешно додаден, ве молиме пробајте подоцна";
+	
+			echo "klient greska";
+	
+	
+		}
+	}
+	
+	
+	
 	//--------------------------------------------------------------------------------------------------------------------------
 	//views za prikaz
 	
@@ -868,9 +953,9 @@ class Controller_klienti_main extends CI_Controller{
 	
 	public function view_prikaz_procenka($id_klient){
 		
-		$this->load->model('models_get/model_get', 'model');
+		$this->load->model('models_get/model_get', 'model_get');
 			
-		$informacii_procenka = $this->model->get_prikaz_procenka($id_klient);
+		$informacii_procenka = $this->model_get->get_prikaz_procenka($id_klient);
 			
 		$data['informacii_procenka'] = $informacii_procenka;
 
@@ -880,7 +965,7 @@ class Controller_klienti_main extends CI_Controller{
 			
 		$var=$this->load->view('views_content/views_prikaz/view_prikaz_procenka', $data,TRUE);
 		
-		print_r($informacii_procenka);
+		//print_r($informacii_procenka);
 		//echo $var;
 		return $var;
 		
@@ -958,6 +1043,18 @@ class Controller_klienti_main extends CI_Controller{
 		return $var;
 	}
 	
+	public function view_lista_klienti(){
+	
+		//gi dobivam site klienti so del od nivnite informacii.
+		$klienti = $this->get_klienti();
+	
+		$data['errors'] = '';
+		$data['klienti'] = $klienti;
+	
+		$var=$this->load->view('views_content/views_prikaz/view_lista_klienti', $data, TRUE);
+		$data1["var"]=$var;
+		$this->load->view ("views_content/views_prikaz/master",$data1);
+	}
 	
 	public function prikaz_klienti($id = "1", $tab="osnovni_info") {
 		$this->load->model ( 'models_get/model_get','model_klienti' );
@@ -967,21 +1064,21 @@ class Controller_klienti_main extends CI_Controller{
 		$data['tab']=$tab;
 		$data ["evaluacii"] = $evaluacii;
 		$data ["dnevni"] = $dnevni;
-	
+		
 		if(isset( $_POST['edit_priem'] )){
-			$data ["priem"] = $this->edit_priem ( $id );
+			$data ["priem"] = $this->edit_priem($id);
 			$data["tab"]="osnovni_info";
 		}else{
-			$data ["priem"] = $this->prikaz_priem ( $id );
+			$data ["priem"] = $this->prikaz_priem($id);
 		}
-		if(isset( $_POST['edit_plan'] )){
-			$data ["plan"] = "";//$this->edit_plan ( $id );
+		if(isset( $_POST['editPlan'] )){
+			$data ["plan"] = $this->view_edit_plan($id);
 			$data["tab"]="plan";
 		}else{
 			$data ["plan"] = $this->view_prikaz_plan ( $id );
 		}
 		if(isset( $_POST['editProcenka'] )){
-			$data ["procenka"] = "";//$this->edit_plan ( $id );
+			$data ["procenka"] = $this->view_edit_procenka($id);
 			$data["tab"]="procenka";
 		}else{
 			$data ["procenka"] = $this->view_prikaz_procenka($id);
@@ -991,7 +1088,7 @@ class Controller_klienti_main extends CI_Controller{
 			$this->pdf($var);
 		}
 		$data["prv"]=TRUE;
-	
+		$data['id']=$id;
 		$var=$this->load->view ( "views_content/views_prikaz/view_prikaz_klienti", $data, TRUE);
 	
 		$data1["var"]=$var;
@@ -1072,6 +1169,67 @@ class Controller_klienti_main extends CI_Controller{
 		return $result;
 	}
 	
+	public function get_denovi_meseci(){
+		$denovi = array();
+		$meseci = array();
+		$godini = array();
+		$godiniPriem = array();
+		$pol = array();
+		
+		$denovi[0] = "-";
+		for($i=1;$i<=31;$i++){
+			array_push($denovi, $i);
+		}
+		
+		$meseci[0] = "-";
+		$meseci[1] = "Јануари";
+		$meseci[2] = "Февруари";
+		$meseci[3] = "Март";
+		$meseci[4] = "Април";
+		$meseci[5] = "Мај";
+		$meseci[6] = "Јуни";
+		$meseci[7] = "Јули";
+		$meseci[8] = "Август";
+		$meseci[9] = "Септември";
+		$meseci[10] = "Октомври";
+		$meseci[11] = "Ноември";
+		$meseci[12] = "Декември";
+		
+		
+		$tekovenDatum = date('d-m-Y');
+		
+		$tekovnaGodina = date('Y');
+		$godini[0] = "-";
+		for($j=1960;$j<$tekovnaGodina;$j++){
+			//key e godinata i value e godinata, za da mi bide polesno za vnesuvanje vo baza.
+			$godini[$j] = $j;
+		}
+		$data['tekovenDatum'] = $tekovenDatum;
+		$data['denovi'] = $denovi;
+		$data['meseci'] = $meseci;
+		$data['godini'] = $godini;
+		
+		return $data;
+	}
+
+	//funkcija za zemanje site info za klienti od baza
+	public function get_klienti(){
+		$this->load->model('models_get/model_get', 'model_klienti');
+	
+		$result = $this->model_klienti->get_klienti_za_lista();
+	
+		/*echo "<pre>";
+		print_r($result);
+		echo "</pre>";
+		*/
+		return $result;
+	
+	}
+
+
 }
+
+
+
 
 ?>

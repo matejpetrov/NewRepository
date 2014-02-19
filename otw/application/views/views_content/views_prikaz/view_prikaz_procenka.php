@@ -8,7 +8,7 @@
 		
 		<p></p> <br/> 
 		
-		<?php echo form_open('controller_klienti_main/view_edit_procenka/'.$id_klient); 
+		<?php echo form_open('controller_klienti_main/prikaz_klienti/'.$id_klient); 
 			
 			echo form_label("Проценката ја направил: 	"); 
 			echo $informacii_procenka['vraboten_ime_prezime']." ";

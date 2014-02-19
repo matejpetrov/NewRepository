@@ -18,7 +18,8 @@
 				echo "class = active";
 			}
 			?>><a href="#osnovni_info" data-toggle="tab">Формулар за прием</a></li>
-	<li<?php
+	<li 
+	<?php
 			
 			if ($tab == "procenka" && $prv = TRUE) {
 				$prv = false;
@@ -48,14 +49,13 @@
 			}
 			?> "
 		id="osnovni_info"><?php echo $priem?></div>
-	<div class="tab-pane" <?php
+	<div class="tab-pane <?php
 			if ($tab == "procenka" && $prv = TRUE) {
 				$prv = false;
 				echo "active";
 			}
-			?>" id="procenka"><?php echo $procenka?></div>
-	<div
-		class="tab-pane  <?php
+			?> " id="procenka"><?php echo $procenka?></div>
+	<div class="tab-pane  <?php
 			if ($tab == "plan" && $prv = TRUE) {
 				$prv = false;
 				echo "active";
@@ -65,11 +65,13 @@
 	<div class="tab-pane" id="evaluacii">
 
 		<ul>
+	<li><?php echo anchor_popup(base_url()."controller_klienti_main/view_dodadi_evaluacija/".$id,"Додади нова евалуација" );?>
+		
 			
   <?php
 		foreach ( $evaluacii as $row ) {
 			?>
-<li><?php echo anchor_popup(base_url()."controller_klienti/prikaz_evaluacija/".$row['id_evaluacija'] ,$row['period'] );?>
+<li><?php echo anchor_popup(base_url()."controller_klienti_main/prikaz_evaluacija/".$row['id_evaluacija'] ,$row['period'] );?>
 	</li>
 <?php
 		}
@@ -78,10 +80,11 @@
 	</div>
 	<div class="tab-pane" id="dnevno_sledenje">
 		<ul>
+		<li>	<?php echo anchor_popup(base_url()."controller_klienti_main/view_dnevno_sledenje/".$id, "Додадете нова посета" );?> </li>
   		<?php
 				foreach ( $dnevni as $row ) {
 					?>
-<li>	<?php echo anchor_popup(base_url()."controller_klienti/prikaz_dnevno_sledenje/".$row['id_poseta'] ,$row['datum'] );?> </li>
+<li>	<?php echo anchor_popup(base_url()."controller_klienti_main/view_prikaz_dnevno_sledenje/".$row['id_poseta'] ,$row['datum'] );?> </li>
 		<?php
 				}
 				?>
@@ -89,7 +92,4 @@
 
 	</div>
 </div>
-
-
-
 

@@ -29,7 +29,9 @@ class Controller_klienti_nadvoresni extends CI_Controller{
 		
 		$data['errors'] = "";
 		
-		$this->load->view('views_tabeli_raspored/view_terapevti', $data);
+		$var=$this->load->view('views_tabeli_raspored/view_terapevti', $data, TRUE);
+		$data1['var']=$var;
+		$this->load->view("views_content/views_prikaz/master", $data1);
 		
 	}
 	

@@ -1,7 +1,7 @@
 
 <div class="priem" style="border: double;">
     <?php
-				echo form_open ( "controller_klienti/prikaz_klienti" );
+				echo form_open ( "controller_klienti_main/prikaz_klienti" );
 				echo heading ( "Формулар за прием", 2 );
 				
 				echo br ( 2 );
