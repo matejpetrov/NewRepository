@@ -4,7 +4,7 @@ class Controller_klienti_add extends CI_Controller{
 	
 	
 	public function index(){
-		
+		//komentar za github
 	}
 	
 	//funkcija vo koja se dodavaat osnovnite podatoci za nekoj nov klient, odnosno podatocite od formular za priem.
