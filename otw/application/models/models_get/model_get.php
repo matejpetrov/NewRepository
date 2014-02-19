@@ -164,6 +164,9 @@ class Model_get extends CI_Model{
 		
 		return $result;
 	}
+	public function get_prikaz_procenka2($id_klient){
+	
+	}
 	
 	//funckija vo koja gi zemam terapevtite za klientot cie id go davam kako argument. Ke go koristam za da gi prikazam iminjata 
 	//na terapevtite koga ke pravam prikaz na formata za procenka za klient.
