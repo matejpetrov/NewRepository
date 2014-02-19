@@ -1,4 +1,13 @@
+<!DOCTYPE html> 
 
+<html> 
+	<head> 
+		<title>Bootstrap 101 Template</title> 
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Bootstrap --> 
+		<link href="<?php echo base_url();?>assets/css/bootstrap.min.css" type="text/css" rel="stylesheet" media="screen"/> 
+	</head> 
+	
+	<body> 
 	
 	<?php print_r($informacii_procenka);?>
 		<h1>Проценка за корисникот <?php echo $informacii_procenka['ime_prezime'];?></h1> <br/> 
@@ -62,4 +71,4 @@
 						
 			<input type="submit" name="editProcenka" id="editProcenka" value="Промени проценка" />
 		
-		<?php echo form_close();?> 
+		<?php echo form_close();?> </body>
