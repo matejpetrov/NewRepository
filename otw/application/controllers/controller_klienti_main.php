@@ -1127,9 +1127,6 @@ class Controller_klienti_main extends CI_Controller{
 		if("editPlanSave"){
 		
 		}
-		if("editPlanSave"){
-				
-		}
 		if("editPriemSave"){
 				
 		}
