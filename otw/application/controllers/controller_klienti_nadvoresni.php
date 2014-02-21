@@ -75,7 +75,9 @@ class Controller_klienti_nadvoresni extends CI_Controller{
 			$errors = 'Во моментов не може да се додаде нов терапевт, ве молиме пробајте подоцна';
 			$data = $this->terapevti($errors);
 	
-			$this->load->view('view_terapevti', $data);
+			$tabela = $this->load->view('view_terapevti', $data, TRUE);
+			
+			return $tabela;
 	
 		}
 	}

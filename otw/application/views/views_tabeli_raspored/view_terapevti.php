@@ -14,7 +14,7 @@
 		<!--ova raboti, mozes da go koristis <link rel="stylesheet" type="text/css" href="assets/css/proba.css"> -->
 		
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-		<script src="assets/js/procenka.js"></script>
+		<script src="<?php echo base_url();?>/assets/js/procenka.js"></script>
 		
 		<link href="assets/css/bootstrap.min.css" rel="stylesheet" media="screen"/>
 		
@@ -127,8 +127,7 @@
 					
 					</select> <br/><br/>
 					Маил: <input type="text" name="mail_edit" id="mail_edit"/><br/><br/> 
-					Телефон: <input type="text" name="telefon_edit" id="telefon_edit"/><br/><br/>
-					ID: <input type="text" name="id" id="id"/><br/><br/>
+					Телефон: <input type="text" name="telefon_edit" id="telefon_edit"/><br/><br/>					
 				</div> 
 				
 				<div class="modal-footer"> 

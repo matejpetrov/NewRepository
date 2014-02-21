@@ -6,14 +6,14 @@
 class Controller_klienti_main extends CI_Controller{
 	
 	public function index(){
-		$this->view_prikaz_procenka(1);
+		$this->view_lista_klienti();
 	}
 	
 	//----------------------------------------------------------------------------------------------------------------------------
 	//views za dodavanje
 	
 	//funckija vo koja gi zemam site potrebni informacii koi mu trebaat na view-to za da se prikaze formata za priem. 	
-	public function view_dodadi_korisnik(){
+	public function view_dodadi_klient(){
 	
 		$data=$this->get_denovi_meseci();
 		
@@ -44,7 +44,12 @@ class Controller_klienti_main extends CI_Controller{
 	
 		$data['errors'] = "";
 	
-		$this->load->view('views_content/views_dodavanje/view_dodadi_klient_osnovni', $data);
+		$var = $this->load->view('views_content/views_dodavanje/view_dodadi_klient_osnovni', $data, TRUE);
+		
+		$data1["var"]=$var;
+		$this->load->view ("views_content/views_prikaz/master",$data1);
+						
+		
 	}
 		
 	//funckija vo koja gi zemam podatocite vneseni vo formata za priem i dodavam nov klient vo bazata. Ke pristapam do 
@@ -125,6 +130,8 @@ class Controller_klienti_main extends CI_Controller{
 				//gi dobivam site podatoci koi gi vnel klientot i mu gi prakam na kontrolerot.
 				$data['podatoci_klient'] = $klient;
 	
+				//treba da napravam da prenasoci na osnovnoto view do koe nosi odbiranjeto na eden klient od 
+				//listata, a toa e mislam prikaz_klienti funckijata
 				$this->load->view('views_content/views_dodavanje/view_klient_profil', $data);
 			}
 			else {
@@ -310,11 +317,22 @@ class Controller_klienti_main extends CI_Controller{
 		}
 	}
 	
+	
+	//funckija vo koja go prikzuvam view-to za dodavanje na dnevno sledenje za nekoj klient. 
+	//Tuka treba mislam da dodadam ID kako argument, bidejki sekoe dnevno sledenje se odnesuva za nekoj 
+	//klient
+	//******************************************
 	public function view_dnevno_sledenje(){
 		$data["errors"]="";
 		$this->load->view ( 'views_content/views_dodavanje/view_dodadi_dnevno_sledenje', $data );
 	}
 	
+	//funckija koja ja povikuvam od views_content/views_dodavanje/view_dodadi_dnevno_sledenje. Tuka gi zemma
+	//site podatoci koi bile vneseni vo formata za vnes na dnevno sledenje i gi dodavam vo bazata. Tuka se 
+	//napraveni i site podesuvanja koi se potrebni za upload na nekoj fajl.
+	//****************************************************************************************
+	//mislam deka treba da ja preimenuvam, zaradi naming convention i mislam deka treba da se dodade id na klient 
+	//za kogo se vnesuva.
 	public function dnevno_sledenje() {
 		foreach ( $_POST as $key => $value ) {
 			$post [$key] = $this->input->post ( $key );
@@ -374,6 +392,9 @@ class Controller_klienti_main extends CI_Controller{
 		}
 	}
 	
+	
+	//funkcija koja pristapuva do baza vo models_get/model_get i gi zema site potrebni informacii za da se 
+	//prikaze view-to za dodavanje na evaluacija.
 	public function view_dodadi_evaluacija($id_korisnik = '1') {
 		$this->load->model ( 'models_get/model_get','model_klienti' );
 		$data = $this->model_klienti->get_evaluacija_korisnik_info ( $id_korisnik );
@@ -388,6 +409,11 @@ class Controller_klienti_main extends CI_Controller{
 		$this->load->view ( 'views_content/views_dodavanje/view_dodadi_evaluacija', $data );
 	}
 	
+	//funkija koja ja povikuvam od views_content/views_dodavanje/view_dodadi_evaluacija. Tuka se zemaat site 
+	//vrednosti od POST poleto i se prakaat do modelot kade se dodava nova evaluacija za korisnik cie id treba da go 
+	//dobijam kako argument.
+	//************************************************
+	//dodadi id kako argument
 	public function post_dodadi_evaluacija() {
 		foreach ( $_POST as $key => $value ) {
 			$post [$key] = $this->input->post ( $key );
@@ -433,6 +459,13 @@ class Controller_klienti_main extends CI_Controller{
 			$this->load->view ( 'view_dodadi_evaluacija', $data );
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
 	//--------------------------------------------------------------------------------------------------------------------------
 	//views za edit
 	
@@ -1055,6 +1088,7 @@ class Controller_klienti_main extends CI_Controller{
 		$data1["var"]=$var;
 		$this->load->view ("views_content/views_prikaz/master",$data1);
 	}
+	
 	
 	public function prikaz_klienti($id = "1", $tab="osnovni_info") {
 		$this->load->model ( 'models_get/model_get','model_klienti' );

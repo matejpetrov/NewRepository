@@ -46,7 +46,9 @@ function dodadi_nov_terapevt_AJAX(){
     var mail = document.getElementById("mail").value;
     var telefon = document.getElementById("telefon").value;
     //tuka treba da ja dobijam vrednosta na selektiranata
-    var institucii = $('#institucii').val();
+    var institucii = $('#institucii').val();        
+    
+    $("#myModal").modal('hide');
     
     $.ajax({
         'url' : base_url + controller + '/dodadi_nov_terapevt',
@@ -59,9 +61,9 @@ function dodadi_nov_terapevt_AJAX(){
             	
             	document.getElementById("ime_prezime").value = "";
                 document.getElementById("mail").value = "";
-                document.getElementById("telefon").value = "";                
+                document.getElementById("telefon").value = "";                                                
                 
-            	container.html(data);
+            	container.html(data);            	            	
             	            	
                 //treba da vidam sto ke napravam so institucii vrednosta.
                 
@@ -76,8 +78,7 @@ function dodadi_nov_terapevt_AJAX(){
 //Gi zemam vrednostite od redot kade mi e pritisnato kopceto Promeni
 function set_terapevt_info(id, institucija){
 		
-	document.getElementById("id_terapevt").value = id;
-	document.getElementById("id").value = document.getElementById("id_terapevt").value;
+	document.getElementById("id_terapevt").value = id;	
 	
 	document.getElementById("ime_prezime_edit").value = document.getElementById("td_ime_"+id).innerHTML;	
 	
@@ -119,6 +120,8 @@ function edit_terapevt_AJAX(){
     var institucii = $('#institucii_edit').val();
     
     var url = base_url + controller + edit_terapevt + id;
+    
+    $("#myModalEdit").modal('hide');
     
     $.ajax({
         'url' : url,        

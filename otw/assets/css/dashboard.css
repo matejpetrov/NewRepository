@@ -109,9 +109,8 @@ body {
 }
 .priem h4
 { 
-    text-align: left; 
-    background-color: #F0F3F0;
-   	padding-left: 200px;
+    text-align: center; 
+    background-color: #F0F3F0;   	
 }
 .priem label {
     width:180px;

@@ -59,17 +59,12 @@
 		<div class="row">
 			<div class="col-sm-3 col-md-2 sidebar">
 				<ul class="nav nav-sidebar">
-					<li class="active"><a href="#">Додади нов клиент</a></li>
+					<li class="active"><a href="<?php echo base_url();?>controller_klienti_main/view_dodadi_klient">Додади нов клиент</a></li>
 					<li><a href="#">Распоред</a></li>
 					<li><a href="<?php echo base_url();?>controller_klienti_nadvoresni/view_lista_terapevti">Терапевти</a></li>
-					<li><a href="#">Институции</a></li>
 					<li><a href="#">Наставници</a></li>
-					<li><a href="#">Училишта</a></li>
-					<li><a href="#">Одговорни од фирми</a></li>
-					<li><a href="#">Фирми </a></li>
+					<li><a href="#">Одговорни од Фирми</a></li>
 					<li><a href="#">Мој Профил</a></li>
-					
-					
 				</ul>
 
 			</div>
@@ -78,12 +73,11 @@
 	
        <?php echo $var;?>
           
-        		</div>
+        </div>
+				</div>
+			</div>
 		</div>
-	</div>
-	<!-- kraj na container fluid -->
-
-
+	
 
 	<!-- Bootstrap core JavaScript
     ================================================== -->

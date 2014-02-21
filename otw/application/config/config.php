@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://localhost/workspace/GitHub/NewRepository/otw/';
+$config['base_url']	= 'http://localhost/GitHub/NewRepository/otw/';
 
 /*
 |--------------------------------------------------------------------------
