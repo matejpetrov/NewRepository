@@ -6,7 +6,7 @@
 class Controller_klienti_main extends CI_Controller{
 	
 	public function index(){
-		$this->view_prikaz_procenka(1);
+		$this->view_lista_klienti();
 	}
 	
 	//----------------------------------------------------------------------------------------------------------------------------
@@ -44,7 +44,10 @@ class Controller_klienti_main extends CI_Controller{
 	
 		$data['errors'] = "";
 	
-		$this->load->view('views_content/views_dodavanje/view_dodadi_klient_osnovni', $data);
+		$var=$this->load->view('views_content/views_dodavanje/view_dodadi_klient_osnovni', $data, TRUE);
+		$data1['var']=$var;
+		$this->load->view ("views_content/views_prikaz/master",$data1);
+		
 	}
 		
 	//funckija vo koja gi zemam podatocite vneseni vo formata za priem i dodavam nov klient vo bazata. Ke pristapam do 
@@ -310,12 +313,13 @@ class Controller_klienti_main extends CI_Controller{
 		}
 	}
 	
-	public function view_dnevno_sledenje(){
+	public function view_dodadi_dnevno_sledenje($id_klient){
 		$data["errors"]="";
+		$data['id_klient']=$id_klient;
 		$this->load->view ( 'views_content/views_dodavanje/view_dodadi_dnevno_sledenje', $data );
 	}
 	
-	public function dnevno_sledenje() {
+	public function post_dodadi_dnevno_sledenje($id) {
 		foreach ( $_POST as $key => $value ) {
 			$post [$key] = $this->input->post ( $key );
 		}
@@ -332,10 +336,11 @@ class Controller_klienti_main extends CI_Controller{
 		$config ['upload_path'] = './dokumenti/';
 		$config ['allowed_types'] = 'pdf|ppt|docx';
 		$config ['max_size'] = '800';
+		
 	
 		$this->load->library ( 'upload', $config );
 		$field_name = "upload"; // od koj upload input da zeme default e userfile
-	
+		
 		if (! empty ( $_FILES ['upload'] ['name'] )) { // prvo proverka dali e prazen zosto nemora da stavat fajlt
 				
 			if (! $this->upload->do_upload ( $field_name )) {
@@ -345,12 +350,18 @@ class Controller_klienti_main extends CI_Controller{
 				$this->load->view ( 'views_content/views_dodavanje/view_dodadi_dnevno_sledenje', $data );
 				return;
 			}
+			
+			$upload_data = $this->upload->data ();
+			$file = $upload_data ["file_name"];
 		}
-		$upload_data = $this->upload->data ();
-		$file = $upload_data ["file_name"];
+		else {
+			$file="";
+		}
+		
+		
 		$datum = $date_godina . "-" . $date_mesec . "-" . $date_den;
 		$poseta = array (
-				'klient_id' => "1", // ova kje treba da se zema od query strin ili nesto
+				'klient_id' => $id, // ova kje treba da se zema od query strin ili nesto
 				'datum' => $datum,
 				'cel' => $cel,
 				'realizacija' => $realizacija,
@@ -967,6 +978,7 @@ class Controller_klienti_main extends CI_Controller{
 		
 		//print_r($informacii_procenka);
 		//echo $var;
+		//print_r($data);
 		return $var;
 		
 	}
@@ -980,12 +992,21 @@ class Controller_klienti_main extends CI_Controller{
 		$data = $this->model_klienti->get_dnevno_sledenje ( $id );
 		
 		// $var="";
+		if($data['file'] !=""){
+			$file = $data ['file'];
+			$path = "/dokumenti/$file";
+			$data['file']=$path;
+		}
+		else{
+			$data['file']="";
+		}
+		//print_r($data);
 		if (! (isset ( $_POST ['edit'] ))) {
 			$var = $this->load->view ( 'views_content/views_prikaz/view_prikaz_dnevno_sledenje', $data, TRUE );
 			echo $var; // ova e za pdfot
 		}
-		$file = $data ['file'];
-		$path = "/dokumenti/$file";
+		//print_r($data);
+	
 		if (isset ( $_POST ['download'] )) {
 			$this->load->helper ( 'download' );
 			force_download ( $path, $file );
@@ -1043,6 +1064,10 @@ class Controller_klienti_main extends CI_Controller{
 		return $var;
 	}
 	
+
+	//--------------------------------------------------------------------------------------------------------------------------
+	//views za prikaz klienti lista 
+	
 	public function view_lista_klienti(){
 	
 		//gi dobivam site klienti so del od nivnite informacii.
@@ -1057,6 +1082,7 @@ class Controller_klienti_main extends CI_Controller{
 	}
 	
 	public function prikaz_klienti($id = "1", $tab="osnovni_info") {
+		
 		$this->load->model ( 'models_get/model_get','model_klienti' );
 		$evaluacii = $this->model_klienti->site_evaluacii ( $id );
 		$dnevni = $this->model_klienti->site_dnevni ( $id );
@@ -1075,7 +1101,7 @@ class Controller_klienti_main extends CI_Controller{
 			$data ["plan"] = $this->view_edit_plan($id);
 			$data["tab"]="plan";
 		}else{
-			$data ["plan"] = $this->view_prikaz_plan ( $id );
+			$data ["plan"] = $this->view_prikaz_plan ($id);
 		}
 		if(isset( $_POST['editProcenka'] )){
 			$data ["procenka"] = $this->view_edit_procenka($id);
@@ -1084,17 +1110,35 @@ class Controller_klienti_main extends CI_Controller{
 			$data ["procenka"] = $this->view_prikaz_procenka($id);
 		}
 		if(isset( $_POST['pdf_priem'] )){
-			$var=$this->prikaz_priem ( $id );
+			$var=$this->prikaz_priem ($id);
 			$this->pdf($var);
 		}
+		
 		$data["prv"]=TRUE;
 		$data['id']=$id;
 		$var=$this->load->view ( "views_content/views_prikaz/view_prikaz_klienti", $data, TRUE);
 	
+		
 		$data1["var"]=$var;
 		$this->load->view ("views_content/views_prikaz/master",$data1);
 	}
 	
+	public function post_prikaz_klienti(){
+		if("editPlanSave"){
+		
+		}
+		if("editPlanSave"){
+				
+		}
+		if("editPriemSave"){
+				
+		}
+		if("editProcenkaSave"){
+				
+		}
+		
+		
+	} 
 	//----------------------------------------------------------------------------------------------------------------------
 	//informacii
 	

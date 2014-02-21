@@ -126,7 +126,7 @@ echo form_dropdown ( 'nastavnici', $nastavnici, $informacii_procenka ['nastavnik
 echo "<br><br>";
 ?>
 
-<input type="submit" name="editProcenka" id="editProcenka"
+<input type="submit" name="editProcenkaSave" id="editProcenka"
 	value="Промени проценка" />
 
 <input type="submit" name="otkazi" id="otkazi" value="Откажи" />

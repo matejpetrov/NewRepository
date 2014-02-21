@@ -248,7 +248,8 @@
 			<textarea name="komentar" id="komentar"  rows="5" cols="50" placeholder="Внеси коментар"><?php echo $komentar;?></textarea><br/> <br/>
 				
 		<?php //ova e na kraj vo sekoj slucaj
-			echo form_submit('zacuvajPromeni', "Зачувајте ги промените");
+			echo form_submit('editPriemSave', "Зачувајте ги промените");
+			echo form_submit('otkazi', "Откажи");
 		echo form_close();?>
 		
 		

@@ -70,8 +70,8 @@ class Model_get extends CI_Model{
 	//kako argument, i ke gi dadam kon controller-ot
 	public function get_plan($id_klient){
 	
-		$this->db->select('ime_prezime, dolgorocni_celi, kratkorocni_celi, uredi_softver, metodi_frekvencija, ocekuvani_rezultati
-				, planirana_evaluacija_postaveni_celi, datum_plan, plan_napravil');
+		$this->db->select('ime_prezime, dolgorocni_celi, kratkorocni_celi, uredi_softver, metodi_frekvencija, ocekuvani_rezultati,
+				planirana_evaluacija_postaveni_celi, datum_plan, plan_napravil');
 	
 		$this->db->from('klient');
 	
@@ -100,7 +100,7 @@ class Model_get extends CI_Model{
 				, k.planirana_evaluacija_postaveni_celi, k.datum_plan, v.ime_prezime as vraboten_ime_prezime');
 		$this->db->from('klient k');
 		
-		$this->db->join('vraboten v', 'v.id = k.plan_napravil');
+		$this->db->join('vraboten v', 'v.id = k.plan_napravil','left');
 		
 		$this->db->where('k.id', $id_klient);
 		
@@ -180,7 +180,7 @@ class Model_get extends CI_Model{
 		
 		$this->db->join('vraboten v', 'k.procenka_napravil = v.id');
 		
-		$this->db->join('nastavnik n', 'n.id_nastavnik = k.nastavnik');
+		$this->db->join('nastavnik n', 'n.id_nastavnik = k.nastavnik','left');
 		
 		$this->db->where('k.id', $id_klient);
 		
@@ -380,7 +380,6 @@ class Model_get extends CI_Model{
 		 */
 		return $result;
 	}
-
 
 
 

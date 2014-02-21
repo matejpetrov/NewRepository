@@ -1,6 +1,6 @@
 
 	
-	<?php print_r($informacii_procenka);?>
+	<?php //print_r($informacii_procenka);?>
 		<h1>Проценка за корисникот <?php echo $informacii_procenka['ime_prezime'];?></h1> <br/> 
 		
 		

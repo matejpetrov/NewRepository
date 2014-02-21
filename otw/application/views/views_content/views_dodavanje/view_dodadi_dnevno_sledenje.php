@@ -6,7 +6,7 @@
 		<body>
 		<?php
 		$this->load->helper("html");
-		echo form_open_multipart("controller_klienti_main/dnevno_sledenje");
+		echo form_open_multipart("controller_klienti_main/post_dodadi_dnevno_sledenje/".$id_klient);
 		echo $errors;
 		
 		echo form_label("Датум: ","data");

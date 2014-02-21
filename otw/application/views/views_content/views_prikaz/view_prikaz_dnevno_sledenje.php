@@ -64,14 +64,17 @@ $attributes = array('name' => 'form', 'id' => 'form');
 				</p>
 				<?php
 	echo br(2);
+	if($file != ""){
 	echo form_label("Документ: ");
 	//echo $file;
 	//echo br(2);
-	echo anchor_popup("/dokumenti/$file", $file);
+	
+	echo anchor_popup($file, $file);
 	//echo form_submit("pregled","Прегледајте го Документот");
 	echo br(2);
 	echo form_submit("download","Симнете го Документот");
 	echo br(2);
+	}
 	echo form_submit("pdf","Креирајте pdf");
 	echo br(2);
 	echo form_submit("edit","Edit");

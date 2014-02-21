@@ -1,5 +1,6 @@
 
-<div class="priem" style="border: double;">
+<div class=pre-scrollable>
+	<div class="priem" style="border: double;">
     <?php
 				echo form_open ( "controller_klienti_main/prikaz_klienti" );
 				echo heading ( "Формулар за прием", 2 );
@@ -23,7 +24,7 @@
 				echo heading ( "Лични податоци", 3 );
 				?>
 <div class="row">
-	
+
 			<div class="col-md-6">
 	
 		<?php
@@ -63,7 +64,7 @@
 		
 		?>
 				</div>
-		
+
 			<div class="col-md-6">
 
 					<?php
@@ -113,43 +114,44 @@
 			</div>
 
 		</div>
-	
 
 
-	<div class="row">
-		<div class="col-md-12">
+
+		<div class="row">
+			<div class="col-md-12">
 
 
-			<h3>Очекувања</h3>
-			<br />
+				<h3>Очекувања</h3>
+				<br />
 
-			<h4>На корисникот</h4>
-<p>
+				<h4>На корисникот</h4>
+				<p>
 <?php echo $ocekuvanja_klient;?>
 </p>
-</br>
-			<h4>На родителите</h4>
-<p>
+				</br>
+				<h4>На родителите</h4>
+				<p>
 <?php echo $ocekuvanja_roditel;?>
 </p>
-</br>
-			<h4>Коментар</h4>
-<p>
+				</br>
+				<h4>Коментар</h4>
+				<p>
 <?php echo $komentar;?>
 </p>
 				
 		
 		<?php
 		// ova e na kraj vo sekoj slucaj
-		echo br(2);
+		echo br ( 2 );
 		echo form_submit ( 'edit_priem', "Променете ги податоците" );
-		echo br(1);
+		echo br ( 1 );
 		echo form_submit ( 'pdf_priem', "Креирајте PDF" );
 		?>
 		</div>
-	</div>
+		</div>
 <?php
 echo form_close ();
 ?>
+</div>
 </div>
 

@@ -51,7 +51,7 @@
 			<textarea name="planirana_evaluacija_postaveni_celi" id="planirana_evaluacija_postaveni_celi" rows="7" cols="65"><?php echo $informacii_plan['planirana_evaluacija_postaveni_celi'];?></textarea><br/> <br/>
 		
 		
-			<input type="submit" name="editPlan" id="editPlan" value="Промени план">
+			<input type="submit" name="editPlanSave" id="editPlan" value="Промени план">
 			
 			<input type="submit" name="otkazi" id="otkazi" value="Откажи">
 			

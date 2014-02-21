@@ -27,6 +27,9 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+    
+    
+  
 </head>
 
 <body>
@@ -59,7 +62,7 @@
 		<div class="row">
 			<div class="col-sm-3 col-md-2 sidebar">
 				<ul class="nav nav-sidebar">
-					<li class="active"><a href="#">Додади нов клиент</a></li>
+					<li class="active"><a href="<?php echo base_url();?>controller_klienti_main/view_dodadi_korisnik">Додади нов клиент</a></li>
 					<li><a href="#">Распоред</a></li>
 					<li><a href="<?php echo base_url();?>controller_klienti_nadvoresni/view_lista_terapevti">Терапевти</a></li>
 					<li><a href="#">Институции</a></li>

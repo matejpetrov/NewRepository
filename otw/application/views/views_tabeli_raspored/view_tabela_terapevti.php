@@ -1,11 +1,10 @@
-
 <table border="1">
-			
+
 			<tr>
 				<th colspan="2" style="text-align: center;">Основни информации</th>
 				<th colspan="3" style="text-align: center;">Контакт</th>
 			</tr>
-			
+
 			<tr>
 				<th>Име и презиме</th>
 				<th>Институција</th>
@@ -13,10 +12,10 @@
 				<th>Телефон</th>
 				<th>Притиснете за промена</th>		
 			</tr>
-			
+
 			<?php 
 			foreach($terapevti as $t){
-					
+
 				?>
 				<tr>					
 					<td id="td_ime_<?php echo $t['id_terapevt'];?>"><?php echo $t['terapevt_ime_prezime'];?></td>
@@ -24,7 +23,7 @@
 					<td id="td_mail_<?php echo $t['id_terapevt'];?>"><?php echo $t['mail'];?></td>
 					<td id="td_telefon_<?php echo $t['id_terapevt'];?>"><?php echo $t['telefon'];?></td>
 					<?php 
-				
+
 					//vo ovoj link ke povikam popup na koj ke mu dadam id na klientot koj sakam da go editiram i vo popup-ot 
 					//ke imam polinja so vnesenite informacii za selektiraniot terapevt so moznost tie da se izmenat.
 					//************************************
@@ -44,7 +43,7 @@
 				
 				<?php 
 			}												
-				
+
 				?>
 		
-		</table>				
+		</table>		

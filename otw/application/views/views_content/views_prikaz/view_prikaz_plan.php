@@ -1,12 +1,13 @@
 
 	
-	<pre>
+	<!-- <pre>
 		<?php 
 		
-		print_r($informacii_plan);
+		//print_r($informacii_plan);
 		
 		?>
 	</pre>
+	 -->
 			
 		<h1>Индивидуален план</h1> <br/> 
 		
