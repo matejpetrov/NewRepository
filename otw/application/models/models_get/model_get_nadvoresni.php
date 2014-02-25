@@ -25,9 +25,9 @@ class Model_get_nadvoresni extends CI_Model{
 	
 	//funckija vo koja ke pristapam do baza i ke gi zemam site informacii za terapevtite koi mi se vneseni, vklucuvajki ja i 
 	//institucijata vo koja rabotat. Treba da upotrebam join za polesen da mi e pristapot do institucijata.
-	public function get_terapevi_everything(){				
+	public function get_terapevi_everything(){
 		
-		$this->db->select('t.id_terapevt, t.terapevt_ime_prezime, t.mail, t.telefon, i.ime_institucija');
+		$this->db->select('t.id_terapevt, t.terapevt_ime_prezime, t.mail, t.telefon, t.institucija, i.ime_institucija');
 		
 		$this->db->from('terapevt t');
 		
@@ -41,8 +41,18 @@ class Model_get_nadvoresni extends CI_Model{
 			//go konvertiram rezultatot za eden terapevt od stdClass vo array, za da mozam polesno da pristapuvam do podatocite.
 			$row1 = (array)$row;
 			
-			//go dodavam vo glavnata lista koja ke ja vratam do controller-ot.
-			array_push($result, $row1);			
+			if($row1['mail'] == ""){
+				$row1['mail'] = "/";
+			}
+			
+			if($row1['telefon'] == ""){
+				$row1['telefon'] = "/";
+			}
+						
+			
+			//go dodavam vo glavnata lista koja ke ja vratam do controller-ot. Eden element od listata ke mozam da pristapam preku
+			//id-to na terapevtot.
+			$result[$row->id_terapevt] = $row1;		
 		}
 		
 		return $result;
@@ -50,6 +60,7 @@ class Model_get_nadvoresni extends CI_Model{
 	
 	//funckija koja gi zema site institucii vo koi moze da raboti eden terapevt
 	public function get_institucii(){
+		
 		$query = $this->db->get('institucija');
 	
 		$result = array();
@@ -82,10 +93,52 @@ class Model_get_nadvoresni extends CI_Model{
 	//ucilisteto vo koe rabotat. Treba da upotrebam join za polesen da mi e pristapot do ucilisteto.
 	public function get_nastavnici_everything(){
 		
+		$this->db->select('n.id_nastavnik, n.nastavnik_ime_prezime, n.uciliste, n.mail, n.telefon, u.ime_uciliste');
+		
+		$this->db->from('nastavnik n');
+		
+		$this->db->join('uciliste u', 'n.uciliste = u.id_uciliste');
+
+		$query = $this->db->get();
+		
+		$result = array();
+		
+		foreach($query->result() as $row){
+			//go konvertiram rezultatot za eden terapevt od stdClass vo array, za da mozam polesno da pristapuvam do podatocite.
+			$row1 = (array)$row;
+				
+			if($row1['mail'] == ""){
+				$row1['mail'] = "/";
+			}
+				
+			if($row1['telefon'] == ""){
+				$row1['telefon'] = "/";
+			}
+		
+				
+			//go dodavam vo glavnata lista koja ke ja vratam do controller-ot. Eden element od listata ke mozam da pristapam preku
+			//id-to na terapevtot.
+			$result[$row->id_nastavnik] = $row1;
+		}
+		
+		return $result;
+		
 	}
-	
+		
 	//funckija vo koja gi zemam od baza site ucilista vo koi moze da raboti eden nastavnik
 	public function get_ucilista(){
+		
+		$query = $this->db->get('uciliste');
+		
+		$result = array();
+		
+		foreach($query->result() as $row){
+			//vrednosta na ona sto ke se selektira vo nekoja korisnicka kontrola ke bide
+			//id-to na institucijata, a ke se prikazuva imeto na institucijata
+			$result[$row->id_uciliste] = $row->ime_uciliste;
+		}
+		
+		return $result;
 		
 	}
 	

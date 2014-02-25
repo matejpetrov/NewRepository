@@ -1,25 +1,4 @@
-<?php 
 
-print_r($informacii_plan);
-
-echo "<br><br><br>";
-
-?>
-
-<html>
-
-<head>
-<meta http-equiv ="Content-Type" content = "text/html" charset ="UTF-8"/>
-
-
-<script>
-
-</script>
-
-</head>
-
-
-<body>
 	
 <h1>Направете промени и притиснете го копчето Промени план</h1>
 
@@ -78,13 +57,5 @@ echo "<br><br><br>";
 			
 		<?php echo form_close();?>
 	
-	</body>
-
-</html>
-
-
-
-
-
-
+	
 

@@ -23,7 +23,7 @@
 		
 		<?php 
 		//ke prenasocam na funkcijata koja ke mi go prikaze view-to za edit na plan za klientot, a id-to ke go dadam kako argument.
-		echo form_open('controller_klienti_main/view_edit_plan/'.$id_klient); 
+		echo form_open('controller_klienti_main/prikaz_klienti/'.$id_klient); 
 			
 			echo form_label("Планот го направил: 	"); 
 			echo $informacii_plan['vraboten_ime_prezime']." ";

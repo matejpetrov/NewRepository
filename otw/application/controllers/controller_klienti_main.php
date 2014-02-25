@@ -6,49 +6,21 @@
 class Controller_klienti_main extends CI_Controller{
 	
 	public function index(){
+<<< HEAD
 		$this->view_dodadi_procenka();
+=======
+		$this->view_lista_klienti();
+>>>>>>> origin/matej_branch
 	}
 	
 	//----------------------------------------------------------------------------------------------------------------------------
 	//views za dodavanje
 	
 	//funckija vo koja gi zemam site potrebni informacii koi mu trebaat na view-to za da se prikaze formata za priem. 	
-	public function view_dodadi_korisnik(){
+	public function view_dodadi_klient(){
 	
-		$denovi = array();
-		$meseci = array();
-		$godini = array();
-		$godiniPriem = array();
-		$pol = array();
-	
-		$denovi[0] = "-";
-		for($i=1;$i<=31;$i++){
-			array_push($denovi, $i);
-		}
-	
-		$meseci[0] = "-";
-		$meseci[1] = "Јануари";
-		$meseci[2] = "Февруари";
-		$meseci[3] = "Март";
-		$meseci[4] = "Април";
-		$meseci[5] = "Мај";
-		$meseci[6] = "Јуни";
-		$meseci[7] = "Јули";
-		$meseci[8] = "Август";
-		$meseci[9] = "Септември";
-		$meseci[10] = "Октомври";
-		$meseci[11] = "Ноември";
-		$meseci[12] = "Декември";
-	
-	
-		$tekovenDatum = date('d-m-Y');
-	
-		$tekovnaGodina = date('Y');
-		$godini[0] = "-";
-		for($j=1960;$j<$tekovnaGodina;$j++){
-			//key e godinata i value e godinata, za da mi bide polesno za vnesuvanje vo baza.
-			$godini[$j] = $j;
-		}
+		$data=$this->get_denovi_meseci();
+		
 	
 		$pol[0] = 'м';
 		$pol[1] = 'ж';
@@ -71,16 +43,17 @@ class Controller_klienti_main extends CI_Controller{
 		$data['obrazovanie'] = $obrazovanie;
 	
 		$data['poseta'] = $poseta;
-	
-		$data['tekovenDatum'] = $tekovenDatum;
-		$data['denovi'] = $denovi;
-		$data['meseci'] = $meseci;
-		$data['godini'] = $godini;		
+		
 		$data['pol'] = $pol;
 	
 		$data['errors'] = "";
 	
-		$this->load->view('views_content/views_dodavanje/view_dodadi_klient_osnovni', $data);
+		$var = $this->load->view('views_content/views_dodavanje/view_dodadi_klient_osnovni', $data, TRUE);
+		
+		$data1["var"]=$var;
+		$this->load->view ("views_content/views_prikaz/master",$data1);
+						
+		
 	}
 		
 	//funckija vo koja gi zemam podatocite vneseni vo formata za priem i dodavam nov klient vo bazata. Ke pristapam do 
@@ -161,6 +134,8 @@ class Controller_klienti_main extends CI_Controller{
 				//gi dobivam site podatoci koi gi vnel klientot i mu gi prakam na kontrolerot.
 				$data['podatoci_klient'] = $klient;
 	
+				//treba da napravam da prenasoci na osnovnoto view do koe nosi odbiranjeto na eden klient od 
+				//listata, a toa e mislam prikaz_klienti funckijata
 				$this->load->view('views_content/views_dodavanje/view_klient_profil', $data);
 			}
 			else {
@@ -346,7 +321,159 @@ class Controller_klienti_main extends CI_Controller{
 		}
 	}
 	
+<<<<<<< HEAD
 	
+=======
+	
+	//funckija vo koja go prikzuvam view-to za dodavanje na dnevno sledenje za nekoj klient. 
+	//Tuka treba mislam da dodadam ID kako argument, bidejki sekoe dnevno sledenje se odnesuva za nekoj 
+	//klient
+	//******************************************
+	public function view_dnevno_sledenje(){
+		$data["errors"]="";
+		$this->load->view ( 'views_content/views_dodavanje/view_dodadi_dnevno_sledenje', $data );
+	}
+	
+	//funckija koja ja povikuvam od views_content/views_dodavanje/view_dodadi_dnevno_sledenje. Tuka gi zemma
+	//site podatoci koi bile vneseni vo formata za vnes na dnevno sledenje i gi dodavam vo bazata. Tuka se 
+	//napraveni i site podesuvanja koi se potrebni za upload na nekoj fajl.
+	//****************************************************************************************
+	//mislam deka treba da ja preimenuvam, zaradi naming convention i mislam deka treba da se dodade id na klient 
+	//za kogo se vnesuva.
+	public function dnevno_sledenje() {
+		foreach ( $_POST as $key => $value ) {
+			$post [$key] = $this->input->post ( $key );
+		}
+		$date_den = $post ["data_den"];
+		$date_mesec = $post ["data_mesec"];
+		$date_godina = $post ["data_godina"];
+		$cel = $post ["cel"];
+		$realizacija = $post ["realizacija"];
+		$postignuvanje = $post ["postignuvanje"];
+		$poteskotii = $post ["poteskotii"];
+		$plan_nareden_pat = $post ["plan"];
+	
+		// za fajlot podesuvanja
+		$config ['upload_path'] = './dokumenti/';
+		$config ['allowed_types'] = 'pdf|ppt|docx';
+		$config ['max_size'] = '800';
+	
+		$this->load->library ( 'upload', $config );
+		$field_name = "upload"; // od koj upload input da zeme default e userfile
+	
+		if (! empty ( $_FILES ['upload'] ['name'] )) { // prvo proverka dali e prazen zosto nemora da stavat fajlt
+				
+			if (! $this->upload->do_upload ( $field_name )) {
+				// $data['errors']=array();
+				$data ['errors'] = $this->upload->display_errors ();
+	
+				$this->load->view ( 'views_content/views_dodavanje/view_dodadi_dnevno_sledenje', $data );
+				return;
+			}
+		}
+		$upload_data = $this->upload->data ();
+		$file = $upload_data ["file_name"];
+		$datum = $date_godina . "-" . $date_mesec . "-" . $date_den;
+		$poseta = array (
+				'klient_id' => "1", // ova kje treba da se zema od query strin ili nesto
+				'datum' => $datum,
+				'cel' => $cel,
+				'realizacija' => $realizacija,
+				'postignuvanja' => $postignuvanje,
+				'poteskotii' => $poteskotii,
+				'plan_naredna_poseta' => $plan_nareden_pat,
+				'file' => $file,
+				'kategorija' => "kategorija"
+		);
+		$this->load->model ( "models_post/model_post_formulari", "model_klienti" );
+	
+		$result = $this->model_klienti->dodadi_dnevno_sledenje ( $poseta );
+	
+		if ($result) {
+				
+			$this->load->view ( 'view_profil' );
+		} else {
+			$data ['errors'] = "Имаше грешка во внесувањето на оваа посета. Ве молам обидете се повторно подоцна";
+				
+			$this->load->view ( 'views_content/views_dodavanje/view_dodadi_dnevno_sledenje', $data );
+		}
+	}
+	
+	
+	//funkcija koja pristapuva do baza vo models_get/model_get i gi zema site potrebni informacii za da se 
+	//prikaze view-to za dodavanje na evaluacija.
+	public function view_dodadi_evaluacija($id_korisnik = '1') {
+		$this->load->model ( 'models_get/model_get','model_klienti' );
+		$data = $this->model_klienti->get_evaluacija_korisnik_info ( $id_korisnik );
+		
+		
+	
+		$vraboteni =$this->get_vraboteni();
+		//print_r($vraboteni);
+	
+		$data ['vraboteni'] = $vraboteni;
+		$data ['id_korisnik'] = $id_korisnik;
+		$this->load->view ( 'views_content/views_dodavanje/view_dodadi_evaluacija', $data );
+	}
+	
+	//funkija koja ja povikuvam od views_content/views_dodavanje/view_dodadi_evaluacija. Tuka se zemaat site 
+	//vrednosti od POST poleto i se prakaat do modelot kade se dodava nova evaluacija za korisnik cie id treba da go 
+	//dobijam kako argument.
+	//************************************************
+	//dodadi id kako argument
+	public function post_dodadi_evaluacija() {
+		foreach ( $_POST as $key => $value ) {
+			$post [$key] = $this->input->post ( $key );
+		}
+		// print_r($post);
+		$korisnik = $post ['id_korisnik'];
+		$period = $post ['period'];
+		$evauliral = $post ['vraboteni'];
+		$raboti_so = $post ['raboti_so'];
+		$date_den = $post ["data_den"];
+		$date_mesec = $post ["data_mesec"];
+		$date_godina = $post ["data_godina"];
+		$planirani = $post ["planirani"];
+		$ostvareni_celi = $post ["ostvareni_celi"];
+		$narativen = $post ["narativen"];
+		$novi_celi = $post ["novi_celi"];
+		$preporaki = $post ["preporaki"];
+	
+		$datum = $date_godina . "-" . $date_mesec . "-" . $date_den;
+		$eval = array (
+				'klient_id' => $korisnik,
+				'period' => $period,
+				'datum' => $datum,
+				'evaluiral' => $evauliral,
+				'planirani_celi' => $planirani,
+				'ostvareni_celi' => $ostvareni_celi,
+				'narativen_izvestaj' => $narativen,
+				'novi_celi' => $novi_celi,
+				'preporaki' => $preporaki
+		);
+	
+		$this->load->model ( "models_post/model_post_formulari","model_klienti" );
+		
+	
+		$result = $this->model_klienti->dodadi_evaluacija ( $eval );
+	
+		if ($result) {
+				
+			$this->load->view ( 'view_profil' );
+		} else {
+			$data ['errors'] = "Имаше грешка во внесувањето на оваа посета. Ве молам обидете се повторно подоцна";
+				
+			$this->load->view ( 'view_dodadi_evaluacija', $data );
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+>>>>>>> origin/matej_branch
 	//--------------------------------------------------------------------------------------------------------------------------
 	//views za edit
 	
@@ -354,16 +481,17 @@ class Controller_klienti_main extends CI_Controller{
 	//za klient cie id go dobivam kako parametar. Ke pristapam do model_get i tamu ke ja povikam funckijata get_plan
 	public function view_edit_plan($id_klient){
 		
-		$this->load->model('models_get/model_get', 'model');
+		$this->load->model('models_get/model_get', 'model_get');
 			
-		$informacii_plan = $this->model->get_plan($id_klient);
+		$informacii_plan = $this->model_get->get_plan($id_klient);
 			
 		$data['vraboteni'] = $this->get_vraboteni();
 		$data['informacii_plan'] = $informacii_plan;
 		$data['id_klient'] = $id_klient;
 		$data['errors'] = "";
 		
-		$this->load->view('views_content/views_edit/view_edit_plan', $data);
+		$var = $this->load->view('views_content/views_edit/view_edit_plan', $data,TRUE);
+		return $var;
 	}
 		
 	
@@ -408,7 +536,8 @@ class Controller_klienti_main extends CI_Controller{
 		//dokolku uspesno napravam promeni na planot, togas ke prenasocam kon view-to vo koe ke go prikazam planot.
 		if($this->model->edit_plan($id_klient, $plan)){
 	
-			$this->view_prikaz_plan($id_klient);			
+			//$this->view_prikaz_plan($id_klient);
+			$this->prikaz_klienti($id_klient,$plan);
 		}
 	
 		else{
@@ -416,7 +545,7 @@ class Controller_klienti_main extends CI_Controller{
 			$data['informacii_plan'] = $plan;
 			$data['errors'] = "Во моментов не може да се направат промени за планот, Ве молиме стиснете на Откажи ипробајте подоцна";
 			
-			$this->load->view('views_content/views_edit/view_edit_plan', $data);
+		
 		}
 	
 	
@@ -451,7 +580,9 @@ class Controller_klienti_main extends CI_Controller{
 		
 		$data['errors'] = "";
 			
-		$this->load->view('views_content/views_edit/view_edit_procenka', $data);
+		$var=$this->load->view('views_content/views_edit/view_edit_procenka', $data, TRUE);
+		return $var;
+		
 	}
 
 	
@@ -577,6 +708,190 @@ class Controller_klienti_main extends CI_Controller{
 	
 	
 	
+<<<<<<< HEAD
+=======
+	
+		$datum = explode ( "-", $data ['datum'] );
+		$data ['year'] = $datum ['0'];
+		$data ['month'] = $datum ['1'];
+		$data ['day'] = $datum ['2'];
+		$data ['errors'] = "";
+	
+		$id_korisnik = $data ['klient_id'];
+		
+		$data_klient = $this->model_klienti->get_evaluacija_korisnik_info ( $id_korisnik );
+		
+		
+	
+		$vraboteni =$this->get_vraboteni();
+		
+		$data ['klient'] = $data_klient ['klient'];
+		$data ['vraboten'] = $data_klient ['vraboten'];
+	
+	
+		$data ['vraboteni'] = $vraboteni;
+		$data ['id_korisnik'] = $id_korisnik;
+		$data['id']=$id;
+		// mozno e idto vo hidden da go cuvam da treba ili neso takvo ?????
+		$var = $this->load->view ( 'views_content/views_edit/view_edit_evaluacija', $data, TRUE );
+		echo $var;
+		//return $var;
+	}
+
+	public function post_edit_evaluacija($id = '1') {
+		// !!!!!! ДА СЕ СМЕНИ varchar za period!!!!
+		if (isset ( $_POST ['submitEval'] )) {
+				
+			foreach ( $_POST as $key => $value ) {
+				$post [$key] = $this->input->post ( $key );
+			}
+				
+			$datum = $post ['data_den'] . "-" . $post ['data_mesec'] . "-" . $post ['data_godina'];
+				
+			$evaluacija = array (
+					'datum' => $datum,
+					'klient_id' => $post ['id_korisnik'],
+					'period' => $post ['period'],
+					'evaluiral' => $post ['vraboteni'],
+					'planirani_celi' => $post ['planirani'],
+					'ostvareni_celi' => $post ['ostvareni_celi'],
+					'narativen_izvestaj' => $post ['narativen'],
+					'novi_celi' => $post ['novi_celi'],
+					'preporaki' => $post ['preporaki']
+			);
+			$this->load->model ( "models_post/model_post_formulari","model_klienti" );
+				
+			$result = $this->model_klienti->update_evaluacija ( $evaluacija, $id );
+				
+			if ($result) {
+	
+				$this->load->view ( 'view_profil' );
+			} else {
+				$data ['errors'] = "Имаше грешка во внесувањето на оваа посета. Ве молам обидете се повторно подоцна";
+	
+				$this->load->view ( 'view_edit_evaluacija', $data );
+			}
+		}
+	}
+	
+	public function edit_priem($id='1'){
+		$this->load->model ( 'models_get/model_get','model_klienti' );
+		$query = $this->model_klienti->zemi_priem ( $id );
+		$data1 = $query;
+		$datum=explode("-", $data1['datum_raganje']);
+		$data1['den_r']=$datum[2];
+		$data1['mesec_r']=$datum[1];
+		$data1['godina_r']=$datum[0];
+		$data2=$this->get_denovi_meseci();
+		$data=array_merge($data1,$data2);
+		$pol[0] = 'м';
+		$pol[1] = 'ж';
+		$data['pol']=$pol;
+		$data ["vraboteni"] = $this->get_vraboteni ();
+		$data["obrazovanie"]=$this->get_obrazovanie();
+		$data["poprecenosti_site"]=$this->get_poprecenosti();
+		$data["poseta"]=$this->get_tipPoseta();
+		$data["id"]=$id;
+		//echo "<pre>";
+			//print_r($data);
+		//echo "</pre>";
+		
+		$var=$this->load->view("views_content/views_edit/view_edit_priem", $data,TRUE);
+		return $var;
+	}
+
+	public function post_edit_priem(){
+		foreach ( $_POST as $key => $value ) {
+			$post [$key] = $this->input->post ( $key );
+		}
+	
+		$this->load->model('models_post/model_post_formulari','model_klienti');
+	
+	
+		foreach($_POST as $key => $value){
+			$post[$key] = $value;
+		}
+	
+	
+		$den = $post['denovi'];
+		$mesec = $post['meseci'];
+		$godina = $post['godini'];
+	
+		$datum_raganje = $godina."-".$mesec."-".$den;
+	
+	
+	
+		$data['poprecenosti'] = $post['poprecenosti'];
+	
+		$pol = -1;
+	
+		if($post['pol'] == 1){
+			$pol = 0;
+		}
+	
+		else if($post['pol'] == 2){
+			$pol = 1;
+		}
+		$id=$post['id'];
+	
+		$klient = array(
+					
+				'ime_prezime' => $post['ime_prezime'],
+				'datum_raganje' => $datum_raganje,
+				'pol' => $pol,
+				'adresa' => $post['adresa'],
+				'majka' => $post['majka'],
+				'zanimanje_m' => $post['zanimanje_m'],
+				'vraboten_m' => $post['vraboten_m'],
+				'tel_m' => $post['tel_m'],
+				'tatko' => $post['tatko'],
+				'zanimanje_t' => $post['zanimanje_t'],
+				'vraboten_t' => $post['vraboten_t'],
+				'tel_t' => $post['tel_t'],
+				'tip_poseta' => $post['poseta'],
+				'tip_obrazovanie' => $post['obrazovanie'],
+				'upaten_od' => $post['upaten_od'],
+				'primen_od' => $post['vraboteni'],
+				'ocekuvanja_klient' => $post['ocekuvanja_klient'],
+				'ocekuvanja_roditel' => $post['ocekuvanja_roditel'],
+				'komentar' => $post['komentar'],
+				'datum_prva_poseta' => $post['datum_prva_poseta'],
+				'raboti_so' => $post['raboti_so']
+		);
+	
+		$result = $this->model_klienti->post_edit_priem($klient,$id);
+		if($result != false){
+	
+	
+			if($this->model_klienti->edit_poprecenost($id, $post['poprecenosti'])){
+					
+				$data['podatoci_klient'] = $klient;
+	
+				$this->prikaz_klienti($id,"osnovni_info");
+			}
+			else {
+				$data['errors'] = "Попреченостите не може да се додадат во базата,
+						ве молиме пробајте подоцна";
+					
+				//*******************************************************
+				//treba ova da go smenam da ne mi prenasocuva na istata stranica
+				echo "Greska poprecenosti";
+			}
+	
+		}
+	
+		else{
+			$data['errors'] = "Клиентот не беше успешно додаден, ве молиме пробајте подоцна";
+	
+			echo "klient greska";
+	
+	
+		}
+	}
+	
+	
+	
+>>>>>>> origin/matej_branch
 	//--------------------------------------------------------------------------------------------------------------------------
 	//views za prikaz
 	
@@ -612,12 +927,71 @@ class Controller_klienti_main extends CI_Controller{
 		
 		$data['errors'] = "";
 			
+<<<<<<< HEAD
 		$this->load->view('views_content/views_prikaz/view_prikaz_procenka', $data);
+=======
+		$var=$this->load->view('views_content/views_prikaz/view_prikaz_procenka', $data,TRUE);
+		
+		//print_r($informacii_procenka);
+		//echo $var;
+		return $var;
+		
+>>>>>>> origin/matej_branch
 	}
 
 	
+	public function view_lista_klienti(){
+	
+		//gi dobivam site klienti so del od nivnite informacii.
+		$klienti = $this->get_klienti();
+	
+		$data['errors'] = '';
+		$data['klienti'] = $klienti;
+	
+		$var=$this->load->view('views_content/views_prikaz/view_lista_klienti', $data, TRUE);
+		$data1["var"]=$var;
+		$this->load->view ("views_content/views_prikaz/master",$data1);
+	}
 	
 	
+<<<<<<< HEAD
+	
+=======
+	public function prikaz_klienti($id = "1", $tab="osnovni_info") {
+		$this->load->model ( 'models_get/model_get','model_klienti' );
+		$evaluacii = $this->model_klienti->site_evaluacii ( $id );
+		$dnevni = $this->model_klienti->site_dnevni ( $id );
+		
+		$data['tab']=$tab;
+		$data ["evaluacii"] = $evaluacii;
+		$data ["dnevni"] = $dnevni;
+		
+		if(isset( $_POST['edit_priem'] )){
+			$data ["priem"] = $this->edit_priem($id);
+			$data["tab"]="osnovni_info";
+		}else{
+			$data ["priem"] = $this->prikaz_priem($id);
+		}
+		if(isset( $_POST['editPlan'] )){
+			$data ["plan"] = $this->view_edit_plan($id);
+			$data["tab"]="plan";
+		}else{
+			$data ["plan"] = $this->view_prikaz_plan ( $id );
+		}
+		if(isset( $_POST['editProcenka'] )){
+			$data ["procenka"] = $this->view_edit_procenka($id);
+			$data["tab"]="procenka";
+		}else{
+			$data ["procenka"] = $this->view_prikaz_procenka($id);
+		}
+		if(isset( $_POST['pdf_priem'] )){
+			$var=$this->prikaz_priem ( $id );
+			$this->pdf($var);
+		}
+		$data["prv"]=TRUE;
+		$data['id']=$id;
+		$var=$this->load->view ( "views_content/views_prikaz/view_prikaz_klienti", $data, TRUE);
+>>>>>>> origin/matej_branch
 	
 	
 	//----------------------------------------------------------------------------------------------------------------------
@@ -694,6 +1068,67 @@ class Controller_klienti_main extends CI_Controller{
 		return $result;
 	}
 	
+	public function get_denovi_meseci(){
+		$denovi = array();
+		$meseci = array();
+		$godini = array();
+		$godiniPriem = array();
+		$pol = array();
+		
+		$denovi[0] = "-";
+		for($i=1;$i<=31;$i++){
+			array_push($denovi, $i);
+		}
+		
+		$meseci[0] = "-";
+		$meseci[1] = "Јануари";
+		$meseci[2] = "Февруари";
+		$meseci[3] = "Март";
+		$meseci[4] = "Април";
+		$meseci[5] = "Мај";
+		$meseci[6] = "Јуни";
+		$meseci[7] = "Јули";
+		$meseci[8] = "Август";
+		$meseci[9] = "Септември";
+		$meseci[10] = "Октомври";
+		$meseci[11] = "Ноември";
+		$meseci[12] = "Декември";
+		
+		
+		$tekovenDatum = date('d-m-Y');
+		
+		$tekovnaGodina = date('Y');
+		$godini[0] = "-";
+		for($j=1960;$j<$tekovnaGodina;$j++){
+			//key e godinata i value e godinata, za da mi bide polesno za vnesuvanje vo baza.
+			$godini[$j] = $j;
+		}
+		$data['tekovenDatum'] = $tekovenDatum;
+		$data['denovi'] = $denovi;
+		$data['meseci'] = $meseci;
+		$data['godini'] = $godini;
+		
+		return $data;
+	}
+
+	//funkcija za zemanje site info za klienti od baza
+	public function get_klienti(){
+		$this->load->model('models_get/model_get', 'model_klienti');
+	
+		$result = $this->model_klienti->get_klienti_za_lista();
+	
+		/*echo "<pre>";
+		print_r($result);
+		echo "</pre>";
+		*/
+		return $result;
+	
+	}
+
+
 }
+
+
+
 
 ?>

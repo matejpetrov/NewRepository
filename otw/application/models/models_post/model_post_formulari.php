@@ -145,6 +145,55 @@ class Model_post_formulari extends CI_Model{
 	}
 	
 	
+<<<<<<< HEAD
+=======
+	public function update_dnevno_sledenje($data, $id) {
+		$this->db->where ( 'id_poseta', $id );
+		$result = $this->db->update ( 'poseta', $data );
+		return $result;
+	}
+	
+	public function update_evaluacija($evaluacija, $id) {
+		$this->db->where ( 'id_evaluacija', $id );
+		$result = $this->db->update ( 'evaluacija', $evaluacija );
+		return $result;
+	}
+
+	public function post_edit_priem($data,$id){
+		$this->db->where ( 'id', $id );
+		$result = $this->db->update ( 'klient', $data );
+		return $result;
+	}
+	
+	public function edit_poprecenost($id, $poprecenosti){
+	
+	
+		$this->db->where('klient_id', $id);
+		$this->db->delete('korisnik_poprecenost');
+		$rows = array();
+	
+		foreach($poprecenosti as $p){
+	
+			$row = array(
+					'klient_id' => $id,
+					'tip_poprecenost' => $p
+			);
+	
+			array_push($rows, $row);
+	
+		}
+	
+		if($this->db->insert_batch('korisnik_poprecenost', $rows)){
+			return true;
+		}
+	
+		else return false;
+	}
+	
+
+>>>>>>> origin/matej_branch
 }
+
+
 
 ?>

@@ -14,7 +14,11 @@
 | path to your installation.
 |
 */
+<<<<<<< HEAD
 $config['base_url']	= 'http://localhost/otw/';
+=======
+$config['base_url']	= 'http://localhost/GitHub/NewRepository/otw/';
+>>>>>>> origin/matej_branch
 
 /*
 |--------------------------------------------------------------------------
