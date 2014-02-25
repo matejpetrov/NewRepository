@@ -6,11 +6,8 @@
 class Controller_klienti_main extends CI_Controller{
 	
 	public function index(){
-<<< HEAD
 		$this->view_dodadi_procenka();
-=======
 		$this->view_lista_klienti();
->>>>>>> origin/matej_branch
 	}
 	
 	//----------------------------------------------------------------------------------------------------------------------------
@@ -321,9 +318,7 @@ class Controller_klienti_main extends CI_Controller{
 		}
 	}
 	
-<<<<<<< HEAD
-	
-=======
+
 	
 	//funckija vo koja go prikzuvam view-to za dodavanje na dnevno sledenje za nekoj klient. 
 	//Tuka treba mislam da dodadam ID kako argument, bidejki sekoe dnevno sledenje se odnesuva za nekoj 
@@ -403,10 +398,35 @@ class Controller_klienti_main extends CI_Controller{
 	//funkcija koja pristapuva do baza vo models_get/model_get i gi zema site potrebni informacii za da se 
 	//prikaze view-to za dodavanje na evaluacija.
 	public function view_dodadi_evaluacija($id_korisnik = '1') {
+		
 		$this->load->model ( 'models_get/model_get','model_klienti' );
 		$data = $this->model_klienti->get_evaluacija_korisnik_info ( $id_korisnik );
 		
+		$datum = explode ( "-", $data ['datum'] );
+		$data ['year'] = $datum ['0'];
+		$data ['month'] = $datum ['1'];
+		$data ['day'] = $datum ['2'];
+		$data ['errors'] = "";
 		
+		$id_korisnik = $data ['klient_id'];
+		
+		$data_klient = $this->model_klienti->get_evaluacija_korisnik_info ( $id_korisnik );
+		
+		
+		
+		$vraboteni =$this->get_vraboteni();
+		
+		$data ['klient'] = $data_klient ['klient'];
+		$data ['vraboten'] = $data_klient ['vraboten'];
+		
+		
+		$data ['vraboteni'] = $vraboteni;
+		$data ['id_korisnik'] = $id_korisnik;
+		$data['id']=$id;
+		// mozno e idto vo hidden da go cuvam da treba ili neso takvo ?????
+		$var = $this->load->view ( 'views_content/views_edit/view_edit_evaluacija', $data, TRUE );
+		echo $var;
+		//return $var;
 	
 		$vraboteni =$this->get_vraboteni();
 		//print_r($vraboteni);
@@ -469,11 +489,6 @@ class Controller_klienti_main extends CI_Controller{
 	
 	
 	
-	
-	
-	
-	
->>>>>>> origin/matej_branch
 	//--------------------------------------------------------------------------------------------------------------------------
 	//views za edit
 	
@@ -706,37 +721,7 @@ class Controller_klienti_main extends CI_Controller{
 		}
 	}
 	
-	
-	
-<<<<<<< HEAD
-=======
-	
-		$datum = explode ( "-", $data ['datum'] );
-		$data ['year'] = $datum ['0'];
-		$data ['month'] = $datum ['1'];
-		$data ['day'] = $datum ['2'];
-		$data ['errors'] = "";
-	
-		$id_korisnik = $data ['klient_id'];
 		
-		$data_klient = $this->model_klienti->get_evaluacija_korisnik_info ( $id_korisnik );
-		
-		
-	
-		$vraboteni =$this->get_vraboteni();
-		
-		$data ['klient'] = $data_klient ['klient'];
-		$data ['vraboten'] = $data_klient ['vraboten'];
-	
-	
-		$data ['vraboteni'] = $vraboteni;
-		$data ['id_korisnik'] = $id_korisnik;
-		$data['id']=$id;
-		// mozno e idto vo hidden da go cuvam da treba ili neso takvo ?????
-		$var = $this->load->view ( 'views_content/views_edit/view_edit_evaluacija', $data, TRUE );
-		echo $var;
-		//return $var;
-	}
 
 	public function post_edit_evaluacija($id = '1') {
 		// !!!!!! ДА СЕ СМЕНИ varchar za period!!!!
@@ -888,10 +873,7 @@ class Controller_klienti_main extends CI_Controller{
 	
 		}
 	}
-	
-	
-	
->>>>>>> origin/matej_branch
+
 	//--------------------------------------------------------------------------------------------------------------------------
 	//views za prikaz
 	
@@ -927,16 +909,13 @@ class Controller_klienti_main extends CI_Controller{
 		
 		$data['errors'] = "";
 			
-<<<<<<< HEAD
-		$this->load->view('views_content/views_prikaz/view_prikaz_procenka', $data);
-=======
+
 		$var=$this->load->view('views_content/views_prikaz/view_prikaz_procenka', $data,TRUE);
 		
 		//print_r($informacii_procenka);
 		//echo $var;
 		return $var;
 		
->>>>>>> origin/matej_branch
 	}
 
 	
@@ -952,12 +931,10 @@ class Controller_klienti_main extends CI_Controller{
 		$data1["var"]=$var;
 		$this->load->view ("views_content/views_prikaz/master",$data1);
 	}
-	
-	
-<<<<<<< HEAD
-	
-=======
+
+
 	public function prikaz_klienti($id = "1", $tab="osnovni_info") {
+		
 		$this->load->model ( 'models_get/model_get','model_klienti' );
 		$evaluacii = $this->model_klienti->site_evaluacii ( $id );
 		$dnevni = $this->model_klienti->site_dnevni ( $id );
@@ -991,8 +968,8 @@ class Controller_klienti_main extends CI_Controller{
 		$data["prv"]=TRUE;
 		$data['id']=$id;
 		$var=$this->load->view ( "views_content/views_prikaz/view_prikaz_klienti", $data, TRUE);
->>>>>>> origin/matej_branch
-	
+		
+	}
 	
 	//----------------------------------------------------------------------------------------------------------------------
 	//informacii
@@ -1126,9 +1103,8 @@ class Controller_klienti_main extends CI_Controller{
 	}
 
 
+	
 }
-
-
 
 
 ?>

@@ -151,18 +151,13 @@ class Model_get extends CI_Model{
 	//za terapevtot treba da zememe period koga posetuval, kontakt i institucija vo koja pripaga.
 	public function get_prikaz_procenka($id_klient){
 		
-<<<<<<< HEAD
-		$this->db->select('k.ime_prezime, k.datum_na_procenka, k.motorika, k.kognitivni_spos, k.govor_komunikacija, k.pismenost,
-				k.odnesuvanje, k.rizici, k.opkruzuvanje, k.interesi, k.kompjuterski_vestini, k.nastavnik, v.ime_prezime as
-				vraboten_ime_prezime, n.nastavnik_ime_prezime');
-=======
+
 	/*	$rez=$this->db->query("SELECT k.ime_prezime, k.datum_na_procenka, k.motorika, k.kognitivni_spos, k.govor_komunikacija, k.pismenost,
 				k.odnesuvanje, k.rizici, k.opkruzuvanje, k.interesi, k.kompjuterski_vestini, k.nastavnik, v.ime_prezime as vraboten_ime_prezime, n.nastavnik_ime_prezime
 				FROM klient k, vraboten v, nastavnik n
 				WHERE k.procenka_napravil = v.id AND n.id_nastavnik = k.nastavnik AND k.id='" .$id_klient. "'" 
 				
 				);
->>>>>>> origin/matej_branch
 		
 		$this->db->from('klient k');
 		
@@ -173,8 +168,7 @@ class Model_get extends CI_Model{
 		$this->db->where('k.id', $id_klient);
 		
 		$query = $this->db->get();
-<<<<<<< HEAD
-=======
+		
 		*/
 		//print_r($rez);
 		
@@ -193,7 +187,6 @@ class Model_get extends CI_Model{
 		$this->db->where('k.id', $id_klient);
 		
 		$query = $this->db->get();
->>>>>>> origin/matej_branch
 		
 		$result = array();
 		
@@ -204,15 +197,8 @@ class Model_get extends CI_Model{
 		$result['terapevti'] = $this->get_terapevti_klient($id_klient);
 		
 		return $result;
-<<<<<<< HEAD
-	} 
-=======
-		
-		
-	}
->>>>>>> origin/matej_branch
 
-	
+	} 
 	//funckija vo koja gi zemam terapevtite za klientot cie id go davam kako argument. Ke go koristam za da gi prikazam iminjata 
 	//na terapevtite koga ke pravam prikaz na formata za procenka za klient.
 	public function get_terapevti_klient($id_klient){
@@ -242,8 +228,7 @@ class Model_get extends CI_Model{
 	}
 
 
-<<<<<<< HEAD
-=======
+
 	public function get_evaluacija_korisnik_info($id) {
 		$result = $this->db->query ( "SELECT k.raboti_so, v.id, k.id, k.ime_prezime as klient, k.kratkorocni_celi,v.ime_prezime as vraboten
 				FROM klient k,vraboten v
@@ -383,17 +368,6 @@ class Model_get extends CI_Model{
 		 */
 		return $result;
 	}
-
-
-
-
->>>>>>> origin/matej_branch
 }
-
-
-
-
-
-
 
 ?>
