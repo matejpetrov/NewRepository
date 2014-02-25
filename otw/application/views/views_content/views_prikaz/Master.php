@@ -9,7 +9,7 @@
 <meta name="author" content="">
 <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
 
-<title>Dashboard Template for Bootstrap</title>
+<title>Отворете ги Прозорците</title>
 
 <!-- Bootstrap core CSS -->
 <link href="<?php echo base_url();?>assets/css/bootstrap.min.css"
@@ -18,6 +18,9 @@
 <!-- Custom styles for this template -->
 <link href="<?php echo base_url();?>assets/css/dashboard.css"
 	rel="stylesheet">
+
+<link href="<?php echo base_url();?>assets/css/proba.css"
+rel="stylesheet">
 
 <!-- Just for debugging purposes. Don't actually copy this line! -->
 <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -61,9 +64,12 @@
 				<ul class="nav nav-sidebar">
 					<li class="active"><a href="<?php echo base_url();?>controller_klienti_main/view_dodadi_klient">Додади нов клиент</a></li>
 					<li><a href="#">Распоред</a></li>
-					<li><a href="<?php echo base_url();?>controller_klienti_nadvoresni/view_lista_terapevti">Терапевти</a></li>
-					<li><a href="#">Наставници</a></li>
-					<li><a href="#">Одговорни од Фирми</a></li>
+					<li><a href="<?php echo base_url();?>controller_klienti_nadvoresni/view_lista_nadvoresni/1">Терапевти</a></li>
+					<li><a href="<?php echo base_url();?>controller_klienti_nadvoresni/view_lista_nadvoresni_institucii/1">Институции</a></li>
+					<li><a href="<?php echo base_url();?>controller_klienti_nadvoresni/view_lista_nadvoresni/2">Наставници</a></li>
+					<li><a href="<?php echo base_url();?>controller_klienti_nadvoresni/view_lista_nadvoresni_institucii/2">Училишта</a></li>
+					<li><a href="<?php echo base_url();?>controller_klienti_nadvoresni/view_lista_nadvoresni/3">Одговорни од фирми</a></li>					
+					<li><a href="<?php echo base_url();?>controller_klienti_nadvoresni/view_lista_firmi">Фирми</a></li>
 					<li><a href="#">Мој Профил</a></li>
 				</ul>
 
