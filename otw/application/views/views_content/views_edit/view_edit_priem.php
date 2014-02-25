@@ -109,7 +109,7 @@
 		echo "<br><br>";
 		
 		//napisi action del za formata, odnosno koj controller da se povika
-		echo form_open_multipart('controller_klienti_main/post_edit_priem', $attributes);
+		echo form_open_multipart('controller_klienti_main/post_prikaz_klienti/'.$id_klient, $attributes);
 			
 			echo form_label("Датум на прва посета: ");
 			?>
@@ -249,7 +249,7 @@
 				
 		<?php //ova e na kraj vo sekoj slucaj
 			echo form_submit('editPriemSave', "Зачувајте ги промените");
-			echo form_submit('otkazi', "Откажи");
+			echo form_submit('otkaziPriem', "Откажи");
 		echo form_close();?>
 		
 		

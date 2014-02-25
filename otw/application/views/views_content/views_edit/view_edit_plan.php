@@ -13,7 +13,7 @@
 		$attributes = array('name' => 'form', 'id' => 'form', 'class' => 'form');		
 		
 
-		echo form_open('controller_klienti_main/edit_plan/'.$id_klient, $attributes);
+		echo form_open('controller_klienti_main/post_prikaz_klienti/'.$id_klient, $attributes);
 			
 			echo form_label("Планот го прави:	");
 			echo form_dropdown('vraboteni', $vraboteni, $informacii_plan['plan_napravil'])."		";
@@ -51,9 +51,9 @@
 			<textarea name="planirana_evaluacija_postaveni_celi" id="planirana_evaluacija_postaveni_celi" rows="7" cols="65"><?php echo $informacii_plan['planirana_evaluacija_postaveni_celi'];?></textarea><br/> <br/>
 		
 		
-			<input type="submit" name="editPlanSave" id="editPlan" value="Промени план">
+			<input type="submit" name="editPlanSave" id="editPlanSave" value="Промени план">
 			
-			<input type="submit" name="otkazi" id="otkazi" value="Откажи">
+			<input type="submit" name="otkaziPlan" id="otkaziPlan" value="Откажи">
 			
 		<?php echo form_close();?>
 	

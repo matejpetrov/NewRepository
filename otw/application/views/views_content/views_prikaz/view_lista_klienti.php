@@ -1,3 +1,17 @@
+<script type="text/javascript">
+<!--
+
+//-->
+$(document).ready(function() 
+	    { 
+	        $("#myTable").tablesorter(); 
+	    } 
+	); 
+
+</script>
+
+
+
 
 		
 		<h1>Листа од клиенти</h1>
@@ -5,15 +19,17 @@
 		<?php //print_r($klienti);?> 
 		
 		<form>
-			<table class="table table-hover">
-			
+			<table id="myTable" class="tablesorter"> <!-- class="table table-hover"> -->
+			 <thead>
 				<tr>
 					<th>Име и презиме</th>
 					<th>Работи со</th>
 					<th>Тип на посета</th>
 					<th>Попреченост</th>
 				</tr>
-				
+				 <thead>
+				 
+				 <tbody>
 				<?php 
 				foreach ($klienti as $klient)
 				{
@@ -38,6 +54,7 @@
 				}
 				
 				?>
+				</tbody>
 			
 			</table>
 		</form>

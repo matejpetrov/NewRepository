@@ -25,7 +25,7 @@ $attributes = array (
 		'class' => 'form' 
 );
 
-echo form_open ( 'controller_klienti_main/edit_procenka/' . $id_klient );
+echo form_open ( 'controller_klienti_main/post_prikaz_klienti/' . $id_klient );
 echo form_label ( "Проценката ја има направено:	" );
 echo form_dropdown ( 'vraboteni', $vraboteni, $informacii_procenka ['procenka_napravil'] ) . "		";
 
@@ -126,10 +126,10 @@ echo form_dropdown ( 'nastavnici', $nastavnici, $informacii_procenka ['nastavnik
 echo "<br><br>";
 ?>
 
-<input type="submit" name="editProcenkaSave" id="editProcenka"
+<input type="submit" name="editProcenkaSave" id="editProcenkaSave"
 	value="Промени проценка" />
 
-<input type="submit" name="otkazi" id="otkazi" value="Откажи" />
+<input type="submit" name="otkaziProcenka" id="otkaziProcenka" value="Откажи" />
 
 		<?php echo form_close();?>				
 

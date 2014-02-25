@@ -28,7 +28,8 @@
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     
-    
+    <script type="text/javascript" src="<?php echo base_url();?>assets/js/jquery.min.js"></script> 
+<script type="text/javascript" src="<?php echo base_url();?>application/libraries/tablesorter/js/jquery.tablesorter.js"></script> 
   
 </head>
 
@@ -47,7 +48,7 @@
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li><a href="#">Активни Корисници</a></li>
+					<li><a href="<?php echo base_url();?>controller_klienti_main/view_lista_klienti_aktivni">Активни Корисници</a></li>
 					<li><a href="<?php echo base_url();?>controller_klienti_main/view_lista_klienti">Сите Корисници</a></li>
 					<li><a href="#">Мои Корисници</a></li>
 				</ul>

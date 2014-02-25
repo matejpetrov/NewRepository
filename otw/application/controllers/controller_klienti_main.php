@@ -5,8 +5,20 @@
 
 class Controller_klienti_main extends CI_Controller{
 	
+	public function __construct()
+	{
+		parent::__construct();
+		// Your own constructor code
+		$this->load->model('models_post/model_post_formulari', 'model_post');
+		$this->load->model('models_get/model_get', 'model_get');
+	}
+	
+	
+	
 	public function index(){
 		$this->view_lista_klienti();
+
+		
 	}
 	
 	//----------------------------------------------------------------------------------------------------------------------------
@@ -54,7 +66,7 @@ class Controller_klienti_main extends CI_Controller{
 	//models_add/model_add_formulari
 	public function dodadi_klient(){
 	
-		$this->load->model('models_post/model_post_formulari', 'model');
+	
 	
 		
 		foreach($_POST as $key => $value){
@@ -117,18 +129,20 @@ class Controller_klienti_main extends CI_Controller{
 				'raboti_so' => $post['raboti_so']//****************
 		);
 	
-		$id = $this->model->dodadi_klient($klient);
+		$id = $this->model_post->dodadi_klient($klient);
 			
 		if($id != false){
 				
 			//dokolku korisnikot e uspesno dodaden, togas ke probam da dodadam i
 			//poprecenost za istiot. Kako argumenti na ovaa nova funkcija
 			//gi davam id-to na toj korisnik i site selektirani poprecenosti
-			if($this->model->dodadi_poprecenost($id, $post['poprecenosti'])){
+			if($this->model_post->dodadi_poprecenost($id, $post['poprecenosti'])){
 				//gi dobivam site podatoci koi gi vnel klientot i mu gi prakam na kontrolerot.
 				$data['podatoci_klient'] = $klient;
 	
-				$this->load->view('views_content/views_dodavanje/view_klient_profil', $data);
+				//$this->load->view('views_content/views_dodavanje/view_klient_profil', $data);
+				$this->prikaz_klienti($id);
+				
 			}
 			else {
 				$data['errors'] = "Попреченостите не може да се додадат во базата,
@@ -151,7 +165,7 @@ class Controller_klienti_main extends CI_Controller{
 
 	
 	//funckija vo koja gi zemam site potrebni informacii koi mu trebaat na view-toza da se prikaze formata za individualen plan
-	public function view_dodadi_plan(){
+	public function view_dodadi_plan($id_klient){
 		
 		
 		$data['vraboteni'] = $this->get_vraboteni();
@@ -165,8 +179,10 @@ class Controller_klienti_main extends CI_Controller{
 		$data['tekovenDatum'] = $tekovenDatum;
 		
 		$data['errors'] = '';
+		$data['id_klient']=$id_klient;
 			
-		$this->load->view('views_content/views_dodavanje/view_dodadi_plan', $data);
+		$var=$this->load->view('views_content/views_dodavanje/view_dodadi_plan', $data,TRUE);
+		return $var;
 	}
 	
 	//funckija vo koja gi zemam podatocite vneseni vo formata za dodavanje na plan i istiot go dodavam vo bazata, za klientot
@@ -174,7 +190,6 @@ class Controller_klienti_main extends CI_Controller{
 	//Ke pristapam do models_add/model_add_formulari		
 	public function dodadi_plan_klient($id_klient){
 	
-		$this->load->model('models_post/model_post_formulari', 'model');
 	
 		foreach($_POST as $key => $value){
 			$post[$key] = $value;
@@ -189,11 +204,12 @@ class Controller_klienti_main extends CI_Controller{
 				'ocekuvani_rezultati' => $post['ocekuvani_rezultati'],
 				'planirana_evaluacija_postaveni_celi' => $post['planirana_evaluacija_postaveni_celi'],
 				'plan_napravil' => $post['vraboteni'],
-				'datum_plan' => $post['datum_plan']
+				'datum_plan' => $post['datum_plan'],
+				'imaPlan'=>'1'
 		);
 	
 	
-		if($this->model->dodadi_plan($id_klient, $plan)){
+		if($this->model_post->dodadi_plan($id_klient, $plan)){
 			$data['podatoci_klient'] = $plan;
 				
 			$this->load->view('views_content/views_dodavanje/view_klient_profil', $data);
@@ -210,7 +226,7 @@ class Controller_klienti_main extends CI_Controller{
 
 	//funckija vo koja gi zemam site potrebni informacii koi mu trebaat na view-to za da se prikaze formata za dodavanje na 
 	//procenka.
-	public function view_dodadi_procenka(){
+	public function view_dodadi_procenka($id_klient){
 					
 		$data_checkbox['terapevti'] = $this->get_terapevti();
 		
@@ -232,15 +248,17 @@ class Controller_klienti_main extends CI_Controller{
 		$data['tekovenDatum'] = $tekovenDatum;
 		
 		$data['errors'] = '';
+		$data['id_klient']=$id_klient;
 			
-		$this->load->view('views_content/views_dodavanje/view_dodadi_procenka', $data);
+		$var=$this->load->view('views_content/views_dodavanje/view_dodadi_procenka', $data,TRUE);
+		return $var;
 	}
 	
 	//funckija vo koja gi zemam podatocite vneseni vo formata za dodavanje na procenka i istata ja dodavam vo bazata, za klientot
 	//cie id go dobivam kako argument.
 	//Ke pristapam do models_add/model_add_formulari
 	public function dodadi_procenka_klient($id_klient){
-		$this->load->model('models_post/model_post_formulari', 'model');
+		
 		
 		foreach($_POST as $key => $value){
 			$post[$key] = $value;
@@ -257,7 +275,8 @@ class Controller_klienti_main extends CI_Controller{
 				'rizici' => $post['rizici'],
 				'opkruzuvanje' => $post['opkruzuvanje'],
 				'interesi' => $post['interesi'],
-				'kompjuterski_vestini' => $post['kompjuterski_vestini']
+				'kompjuterski_vestini' => $post['kompjuterski_vestini'],
+				'imaProcenka'=>'1'
 				//treba da se dodade i promenliva vraboten, dokolku klientot raboti vo nekoja firma.
 		);
 		
@@ -271,7 +290,7 @@ class Controller_klienti_main extends CI_Controller{
 		
 		//dokolku uspesno sum gi dodal osnovnite podatoci od procenka, treba da proveram dali sum dodal terapevt i dokolku da
 		//i nego da go dodadam vo baza vo tabelata klient_terapevt.
-		if($this->model->dodadi_procenka($id_klient, $procenka)){
+		if($this->model_post->dodadi_procenka($id_klient, $procenka)){
 		
 			//dodavam terapevt samo dokolku e selektiran, i samo dokolku pred toa uspesno sum gi dodal ostanatite
 			//informacii za procenka, bidejki dokolku tie ne se uspesno vneseni ne treba da go vnesuvam nitu selektiraniot
@@ -279,7 +298,7 @@ class Controller_klienti_main extends CI_Controller{
 			if(isset($post['terapevti'])){
 		
 				//dokolku uspesno go dodadam i terapevtot togas prenasocuvam na novata strana.
-				if($this->model->dodadi_terapevt_klient($id_klient, $post['terapevti'])){
+				if($this->model_post->dodadi_terapevt_klient($id_klient, $post['terapevti'])){
 					$data['podatoci_klient'] = $procenka." plus dodadov i terapevt";
 		
 					$this->load->view('views_content/views_dodavanje/view_klient_profil', $data);
@@ -371,9 +390,9 @@ class Controller_klienti_main extends CI_Controller{
 				'file' => $file,
 				'kategorija' => "kategorija"
 		);
-		$this->load->model ( "models_post/model_post_formulari", "model_klienti" );
+		
 	
-		$result = $this->model_klienti->dodadi_dnevno_sledenje ( $poseta );
+		$result = $this->model_post->dodadi_dnevno_sledenje ( $poseta );
 	
 		if ($result) {
 				
@@ -386,8 +405,8 @@ class Controller_klienti_main extends CI_Controller{
 	}
 	
 	public function view_dodadi_evaluacija($id_korisnik = '1') {
-		$this->load->model ( 'models_get/model_get','model_klienti' );
-		$data = $this->model_klienti->get_evaluacija_korisnik_info ( $id_korisnik );
+		
+		$data = $this->model_get->get_evaluacija_korisnik_info ( $id_korisnik );
 		
 		
 	
@@ -430,10 +449,10 @@ class Controller_klienti_main extends CI_Controller{
 				'preporaki' => $preporaki
 		);
 	
-		$this->load->model ( "models_post/model_post_formulari","model_klienti" );
+		
 		
 	
-		$result = $this->model_klienti->dodadi_evaluacija ( $eval );
+		$result = $this->model_post->dodadi_evaluacija ( $eval );
 	
 		if ($result) {
 				
@@ -451,7 +470,6 @@ class Controller_klienti_main extends CI_Controller{
 	//za klient cie id go dobivam kako parametar. Ke pristapam do model_get i tamu ke ja povikam funckijata get_plan
 	public function view_edit_plan($id_klient){
 		
-		$this->load->model('models_get/model_get', 'model_get');
 			
 		$informacii_plan = $this->model_get->get_plan($id_klient);
 			
@@ -486,7 +504,7 @@ class Controller_klienti_main extends CI_Controller{
 	//promenite za planot za klientot cie id ke go dademe kako argument.
 	public function edit_plan_klient($id_klient){
 	
-		$this->load->model('models_post/model_post_formulari', 'model');
+
 	
 		foreach($_POST as $key => $value){
 			$post[$key] = $value;
@@ -504,10 +522,10 @@ class Controller_klienti_main extends CI_Controller{
 		);
 	
 		//dokolku uspesno napravam promeni na planot, togas ke prenasocam kon view-to vo koe ke go prikazam planot.
-		if($this->model->edit_plan($id_klient, $plan)){
+		if($this->model_post->edit_plan($id_klient, $plan)){
 	
 			//$this->view_prikaz_plan($id_klient);
-			$this->prikaz_klienti($id_klient,$plan);
+			//$this->prikaz_klienti($id_klient,$plan);
 		}
 	
 		else{
@@ -526,9 +544,9 @@ class Controller_klienti_main extends CI_Controller{
 	//za klient cie id go dobivam kako parametar. Ke pristapam do model_get i tamu ke ja povikam funckijata get_procenka
 	public function view_edit_procenka($id_klient){
 		
-		$this->load->model('models_get/model_get', 'model');
+	
 			
-		$informacii_procenka = $this->model->get_procenka($id_klient);
+		$informacii_procenka = $this->model_get->get_procenka($id_klient);
 			
 		$data_checkbox['site_terapevti'] = $this->get_terapevti();
 			
@@ -578,7 +596,7 @@ class Controller_klienti_main extends CI_Controller{
 	//************************ Imam mnogu if uslovi, za uspesnost da proveram dali e kako sto treba.
 	public function edit_procenka_klient($id_klient){
 	
-		$this->load->model('models_post/model_post_formulari', 'model');		
+		
 	
 		foreach($_POST as $key => $value){
 			$post[$key] = $value;
@@ -603,7 +621,7 @@ class Controller_klienti_main extends CI_Controller{
 	
 		//dokolku uspesno sum gi editiral osnovnite podatoci od procenka, treba da proveram dali sum dodal terapevt i dokolku da
 		//i nego da go dodadam vo baza vo tabelata klient_terapevt.
-		if($this->model->edit_procenka($id_klient, $procenka)){
+		if($this->model_post->edit_procenka($id_klient, $procenka)){
 	
 			//dokolku se setirani terapevtite vo post, togas treba da pristapam do baza, da gi izbrisam veke postoeckite
 			//za tekovniot klient i da gi dodadam novite. Vo sprotiven slucaj jas ke treba samo da gi izbrisam site stavki
@@ -611,11 +629,11 @@ class Controller_klienti_main extends CI_Controller{
 			if(isset($post['terapevti'])){
 	
 				//najprvin gi brisam prethodnite terapevti za toj klient od baza.
-				if($this->model->brisi_terapevti_klient($id_klient)){
+				if($this->model_post->brisi_terapevti_klient($id_klient)){
 						
 					//gi imam izbrisano site i vednas potoa povikuvam funckija od istiot model kade gi dodavam site terapevti za
 					//toj klient.
-					if($this->model->dodadi_terapevt_klient($id_klient, $post['terapevti'])){
+					if($this->model_post->dodadi_terapevt_klient($id_klient, $post['terapevti'])){
 						//uspesno sum gi dodal novite terapevti, treba da prenasocam na view kade ke napravam prikaz.
 						//*************************************************
 	
@@ -627,7 +645,7 @@ class Controller_klienti_main extends CI_Controller{
 						$data['informacii_procenka'] = $procenka;
 						$data['errors'] = "Имаше грешка при додавањето на новите терапевти, Ве молиме пробајте подоцна";
 						
-						$this->load->view('views_content/views_edit/view_edit_procenka', $data);
+						//$this->load->view('views_content/views_edit/view_edit_procenka', $data);
 					}
 						
 				}
@@ -636,7 +654,7 @@ class Controller_klienti_main extends CI_Controller{
 					$data['informacii_procenka'] = $procenka;
 					$data['errors'] = "Имаше грешка при бришење на терапевти, по кое бришење треба да следува додавање";
 					
-					$this->load->view('views_content/views_edit/view_edit_procenka', $data);
+					//$this->load->view('views_content/views_edit/view_edit_procenka', $data);
 				}
 	
 	
@@ -645,7 +663,7 @@ class Controller_klienti_main extends CI_Controller{
 			//brisenje na site terapevti bidejki nemam selektirano nitu eden.
 			else{
 	
-				if($this->model->brisi_terapevti_klient($id_klient)){
+				if($this->model_post->brisi_terapevti_klient($id_klient)){
 					//dokolku uspesno sum gi izbrisal site, vednas prenasocuvam na prikazot na procenkata za klientot.
 					//**********************************************************
 					$this->view_prikaz_procenka($id_klient);
@@ -657,7 +675,7 @@ class Controller_klienti_main extends CI_Controller{
 					$data['informacii_procenka'] = $procenka;
 					$data['errors'] = "Имаше грешка при бришење на терапевти по кои не следува додавање на нови";
 					
-					$this->load->view('views_content/views_edit/view_edit_procenka', $data);
+					//$this->load->view('views_content/views_edit/view_edit_procenka', $data);
 				}
 	
 			}
@@ -677,8 +695,8 @@ class Controller_klienti_main extends CI_Controller{
 	}
 	
 	public function edit_dnevno_sledenje($id = '1') {
-		$this->load->model ( '/models_get/model_get','model_klienti' );
-		$data = $this->model_klienti->get_dnevno_sledenje ( $id );
+	
+		$data = $this->model_get->get_dnevno_sledenje ( $id );
 		
 		$datum = explode ( "-", $data ['datum'] );
 		$data ['year'] = $datum ['0'];
@@ -737,9 +755,9 @@ class Controller_klienti_main extends CI_Controller{
 				'file' => $file,
 				'kategorija' => "kategorija"
 		);
-		$this->load->model ( "models_post/model_post_formulari","model_klienti" );
 	
-		$result = $this->model_klienti->update_dnevno_sledenje ( $poseta, $id );
+	
+		$result = $this->model_post->update_dnevno_sledenje ( $poseta, $id );
 	
 		if ($result) {
 				
@@ -752,8 +770,8 @@ class Controller_klienti_main extends CI_Controller{
 	}
 	
 	public function edit_evaluacija($id = '1') {
-		$this->load->model ( 'models_get/model_get','model_klienti' );
-		$data = $this->model_klienti->get_evaluacija ( $id );
+		
+		$data = $this->model_get->get_evaluacija ( $id );
 	
 	
 	
@@ -765,7 +783,7 @@ class Controller_klienti_main extends CI_Controller{
 	
 		$id_korisnik = $data ['klient_id'];
 		
-		$data_klient = $this->model_klienti->get_evaluacija_korisnik_info ( $id_korisnik );
+		$data_klient = $this->model_get->get_evaluacija_korisnik_info ( $id_korisnik );
 		
 		
 	
@@ -805,9 +823,9 @@ class Controller_klienti_main extends CI_Controller{
 					'novi_celi' => $post ['novi_celi'],
 					'preporaki' => $post ['preporaki']
 			);
-			$this->load->model ( "models_post/model_post_formulari","model_klienti" );
+		
 				
-			$result = $this->model_klienti->update_evaluacija ( $evaluacija, $id );
+			$result = $this->model_post->update_evaluacija ( $evaluacija, $id );
 				
 			if ($result) {
 	
@@ -820,9 +838,9 @@ class Controller_klienti_main extends CI_Controller{
 		}
 	}
 	
-	public function edit_priem($id='1'){
-		$this->load->model ( 'models_get/model_get','model_klienti' );
-		$query = $this->model_klienti->zemi_priem ( $id );
+	public function edit_priem($id_klient='1'){
+		
+		$query = $this->model_get->zemi_priem ( $id_klient );
 		$data1 = $query;
 		$datum=explode("-", $data1['datum_raganje']);
 		$data1['den_r']=$datum[2];
@@ -837,11 +855,11 @@ class Controller_klienti_main extends CI_Controller{
 		$data["obrazovanie"]=$this->get_obrazovanie();
 		$data["poprecenosti_site"]=$this->get_poprecenosti();
 		$data["poseta"]=$this->get_tipPoseta();
-		$data["id"]=$id;
+	
 		//echo "<pre>";
 			//print_r($data);
 		//echo "</pre>";
-		
+		$data['id_klient']=$id_klient;
 		$var=$this->load->view("views_content/views_edit/view_edit_priem", $data,TRUE);
 		return $var;
 	}
@@ -851,7 +869,7 @@ class Controller_klienti_main extends CI_Controller{
 			$post [$key] = $this->input->post ( $key );
 		}
 	
-		$this->load->model('models_post/model_post_formulari','model_klienti');
+
 	
 	
 		foreach($_POST as $key => $value){
@@ -905,15 +923,15 @@ class Controller_klienti_main extends CI_Controller{
 				'raboti_so' => $post['raboti_so']
 		);
 	
-		$result = $this->model_klienti->post_edit_priem($klient,$id);
+		$result = $this->model_post->post_edit_priem($klient,$id);
 		if($result != false){
 	
 	
-			if($this->model_klienti->edit_poprecenost($id, $post['poprecenosti'])){
+			if($this->model_post->edit_poprecenost($id, $post['poprecenosti'])){
 					
 				$data['podatoci_klient'] = $klient;
 	
-				$this->prikaz_klienti($id,"osnovni_info");
+				//$this->prikaz_klienti($id,"osnovni_info");
 			}
 			else {
 				$data['errors'] = "Попреченостите не може да се додадат во базата,
@@ -945,28 +963,39 @@ class Controller_klienti_main extends CI_Controller{
 	//klientot cie id go dobivam kako parametar.
 	public function view_prikaz_plan($id_klient){
 		
-		$this->load->model('models_get/model_get', 'model_get');
 			
 		//gi zemam podatocite za plan od baza, za da mozam da mu gi dadam na view-to kade ke se prikazat
 		$informacii_plan = $this->model_get->get_prikaz_plan($id_klient);
 		
+		if($informacii_plan['imaPlan']=='0'){
+			$var=$this->view_dodadi_plan($id_klient);
+			
+		}
+		else{
 		$data['informacii_plan'] = $informacii_plan;
 		$data['id_klient'] = $id_klient;
 			
 			
 			
 		$var=$this->load->view('views_content/views_prikaz/view_prikaz_plan', $data,TRUE);
-		
+		}
 		return $var;
+		
 		
 	}
 	
 	
 	public function view_prikaz_procenka($id_klient){
 		
-		$this->load->model('models_get/model_get', 'model_get');
+		
 			
 		$informacii_procenka = $this->model_get->get_prikaz_procenka($id_klient);
+		
+		if($informacii_procenka['imaProcenka']=='0'){
+			$var=$this->view_dodadi_procenka($id_klient);
+			
+		}
+		else{
 			
 		$data['informacii_procenka'] = $informacii_procenka;
 
@@ -979,7 +1008,9 @@ class Controller_klienti_main extends CI_Controller{
 		//print_r($informacii_procenka);
 		//echo $var;
 		//print_r($data);
+		}
 		return $var;
+		
 		
 	}
 
@@ -988,8 +1019,8 @@ class Controller_klienti_main extends CI_Controller{
 		// za klientot da kazuvame????
 		// $id='1';//ova kje bide neso od query
 		// $data=array();
-		$this->load->model ( '/models_get/model_get','model_klienti' );
-		$data = $this->model_klienti->get_dnevno_sledenje ( $id );
+
+		$data = $this->model_get->get_dnevno_sledenje ( $id );
 		
 		// $var="";
 		if($data['file'] !=""){
@@ -1018,14 +1049,14 @@ class Controller_klienti_main extends CI_Controller{
 	}
 	
 	public function prikaz_evaluacija($id = '1') {
-	$this->load->model ( 'models_get/model_get','model_klienti' );
-		$data = $this->model_klienti->get_evaluacija ( $id );
+	
+		$data = $this->model_get->get_evaluacija ( $id );
 	
 		$data ['errors'] = "";
 		$id_korisnik = $data ['klient_id'];
 		
-		$this->load->model ( 'models_get/model_get','model_klienti' );
-		$data_klient = $this->model_klienti->get_evaluacija_korisnik_info ( $id_korisnik );
+		
+		$data_klient = $this->model_get->get_evaluacija_korisnik_info ( $id_korisnik );
 		
 		$vraboteni =$this->get_vraboteni();
 		
@@ -1050,9 +1081,9 @@ class Controller_klienti_main extends CI_Controller{
 		return $var;
 	}
 	
-	public function prikaz_priem($id = '1') {
-		$this->load->model ( 'modeles_get/model_get','model_klienti' );
-		$query = $this->model_klienti->zemi_priem ( $id );
+	public function prikaz_priem($id_klient = '1') {
+		
+		$query = $this->model_get->zemi_priem ( $id_klient );
 		$data = $query;
 		$pol1 = array ();
 		$pol1 [0] = '-';
@@ -1060,6 +1091,9 @@ class Controller_klienti_main extends CI_Controller{
 		$pol1 [2] = 'female';
 		$data ['pol1'] = $pol1;
 		$data ["vraboteni"] = $this->get_vraboteni ();
+		
+		$data['id_klient']=$id_klient;
+		//print_r($data);
 		$var = $this->load->view ( 'views_content/views_prikaz/view_prikaz_priem', $data, TRUE );
 		return $var;
 	}
@@ -1083,9 +1117,9 @@ class Controller_klienti_main extends CI_Controller{
 	
 	public function prikaz_klienti($id = "1", $tab="osnovni_info") {
 		
-		$this->load->model ( 'models_get/model_get','model_klienti' );
-		$evaluacii = $this->model_klienti->site_evaluacii ( $id );
-		$dnevni = $this->model_klienti->site_dnevni ( $id );
+		
+		$evaluacii = $this->model_get->site_evaluacii ( $id );
+		$dnevni = $this->model_get->site_dnevni ( $id );
 		
 		$data['tab']=$tab;
 		$data ["evaluacii"] = $evaluacii;
@@ -1123,19 +1157,58 @@ class Controller_klienti_main extends CI_Controller{
 		$this->load->view ("views_content/views_prikaz/master",$data1);
 	}
 	
-	public function post_prikaz_klienti(){
-		if("editPlanSave"){
-		
+	public function post_prikaz_klienti($id_klient){
+		$tab="osnovni_info";
+		if(isset( $_POST['editPriemSave'] )){
+			$this->post_edit_priem($id_klient);
+			$tab="osnovni_info";
 		}
-		if("editPriemSave"){
-				
+		if(isset( $_POST['otkaziPriem'] )){
+			$tab="osnovni_info";
 		}
-		if("editProcenkaSave"){
-				
+		if(isset( $_POST['editPlanSave'] )){
+			$this->edit_plan_klient($id_klient);
+			$tab="plan";
 		}
+		if(isset( $_POST['otkaziPlan'] )){
+			$tab="plan";
+		}
+		if(isset( $_POST['editProcenkaSave'] )){
+				$this->edit_procenka_klient($id_klient);
+				$tab="procenka";
+		}
+		if(isset( $_POST['otkaziProcenka'] )){
+			$tab="procenka";
+		}
+		if(isset( $_POST['dodadiPlan'] )){
+			$this->dodadi_plan_klient($id_klient);
+			$tab="plan";
+		}
+		if(isset( $_POST['dodadiProcenka'] )){
+			$this->dodadi_procenka_klient($id_klient);
+			$tab="procenka";
+		}
+		//else{
+			//$tab="osnovni_info";
+		//}
+		$this->prikaz_klienti($id_klient,$tab);
 		
 		
 	} 
+	
+	public function view_lista_klienti_aktivni(){
+	
+		//gi dobivam site klienti so del od nivnite informacii.
+		$klienti = $this->get_klienti_aktivni();
+	
+		$data['errors'] = '';
+		$data['klienti'] = $klienti;
+	
+		$var=$this->load->view('views_content/views_prikaz/view_lista_klienti', $data, TRUE);
+		$data1["var"]=$var;
+		$this->load->view ("views_content/views_prikaz/master",$data1);
+	}
+	
 	//----------------------------------------------------------------------------------------------------------------------
 	//informacii
 	
@@ -1152,8 +1225,8 @@ class Controller_klienti_main extends CI_Controller{
 	//funckija vo koja pristapuvam do models_get/model_get za da gi zemam site poprecenosti koi postojat vo bazata na podatoci.
 	//Vo toj model ja povukuvam istata funckija get_poprecenosti
 	public function get_poprecenosti(){
-		$this->load->model('models_get/model_get', 'model');
-		$result = $this->model->get_poprecenosti();
+	
+		$result = $this->model_get->get_poprecenosti();
 	
 		return $result;
 	}
@@ -1161,8 +1234,8 @@ class Controller_klienti_main extends CI_Controller{
 	//funckija vo koja pristapuvam do models_get/model_get za da gi zemam site tipovi na obrazovanie koi postojat vo bazata na podatoci.
 	//Vo toj model ja povukuvam istata funckija get_obrazovanie
 	public function get_obrazovanie(){
-		$this->load->model('models_get/model_get', 'model');
-		$result = $this->model->get_obrazovanie();
+	
+		$result = $this->model_get->get_obrazovanie();
 	
 		return $result;
 	}
@@ -1170,8 +1243,8 @@ class Controller_klienti_main extends CI_Controller{
 	//funckija vo koja pristapuvam do models_get/model_get za da gi zemam site tipovi na poseta koi postojat vo bazata na podatoci.
 	//Vo toj model ja povukuvam istata funckija get_tipPoseta
 	public function get_tipPoseta(){
-		$this->load->model('models_get/model_get', 'model');
-		$result = $this->model->get_tipPoseta();
+	
+		$result = $this->model_get->get_tipPoseta();
 	
 		return $result;
 	}
@@ -1255,12 +1328,23 @@ class Controller_klienti_main extends CI_Controller{
 
 	//funkcija za zemanje site info za klienti od baza
 	public function get_klienti(){
-		$this->load->model('models_get/model_get', 'model_klienti');
 	
-		$result = $this->model_klienti->get_klienti_za_lista();
+		$result = $this->model_get->get_klienti_za_lista();
 	
 		/*echo "<pre>";
 		print_r($result);
+		echo "</pre>";
+		*/
+		return $result;
+	
+	}
+	public function get_klienti_aktivni(){
+	
+	
+		$result = $this->model_get->get_klienti_za_lista_aktivni();
+	
+		/*echo "<pre>";
+			print_r($result);
 		echo "</pre>";
 		*/
 		return $result;

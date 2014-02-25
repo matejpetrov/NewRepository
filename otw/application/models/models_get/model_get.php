@@ -97,7 +97,7 @@ class Model_get extends CI_Model{
 	public function get_prikaz_plan($id_klient){
 		
 		$this->db->select('k.ime_prezime, k.dolgorocni_celi, k.kratkorocni_celi, k.uredi_softver, k.metodi_frekvencija, k.ocekuvani_rezultati
-				, k.planirana_evaluacija_postaveni_celi, k.datum_plan, v.ime_prezime as vraboten_ime_prezime');
+				, k.planirana_evaluacija_postaveni_celi, k.datum_plan,k.imaPlan, v.ime_prezime as vraboten_ime_prezime');
 		$this->db->from('klient k');
 		
 		$this->db->join('vraboten v', 'v.id = k.plan_napravil','left');
@@ -173,12 +173,12 @@ class Model_get extends CI_Model{
 		
 
 		$this->db->select('k.ime_prezime, k.datum_na_procenka, k.motorika, k.kognitivni_spos, k.govor_komunikacija, k.pismenost,
-				k.odnesuvanje, k.rizici, k.opkruzuvanje, k.interesi, k.kompjuterski_vestini, k.nastavnik, v.ime_prezime as
+				k.odnesuvanje, k.rizici, k.opkruzuvanje, k.interesi, k.kompjuterski_vestini, k.nastavnik, k.imaProcenka, v.ime_prezime as
 				vraboten_ime_prezime, n.nastavnik_ime_prezime');
 		
 		$this->db->from('klient k');
 		
-		$this->db->join('vraboten v', 'k.procenka_napravil = v.id');
+		$this->db->join('vraboten v', 'k.procenka_napravil = v.id','left');
 		
 		$this->db->join('nastavnik n', 'n.id_nastavnik = k.nastavnik','left');
 		
@@ -380,7 +380,32 @@ class Model_get extends CI_Model{
 		 */
 		return $result;
 	}
+	
+	public function get_klienti_za_lista_aktivni(){
+		//od klientot gi selektiram negovoto id, imeto i prezimeto, tipot na poseta vo otw i vraboteniot so koj raboti.
+		$this->db->select('k.id, k.ime_prezime, k.tip_poseta, k.raboti_so, k.imaProcenka, v.ime_prezime as raboti_so_ime');
+	
+		$this->db->from('klient k');
+	
+		$this->db->join('vraboten v', 'k.raboti_so = v.id');
+	
+		$this->db->where('k.imaProcenka', '1');
+		$query = $this->db->get();
+	
+		$result = array();
+	
+	
+		//pristapuvam do sekoj klient koj e zemen od baza, i go zemam imeto na vraboteniot koj raboti so nego
+		//za da mozam da go prikazam imeto, a ne negovoto id i isto taka pristapuvam.
+		foreach ($query->result() as $row){
+			$row1=(array)$row;
+			$id=$row1['id'];
+			$result[$id]=$row1;
+			$result[$id]['poprecenosti']=$this->get_poprecenosti_klient($id);
+		}
 
+		return $result;
+	}
 
 
 }

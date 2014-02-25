@@ -1,18 +1,4 @@
-<html>
 
-	<head>
-		
-		<meta http-equiv ="Content-Type" content = "text/html" charset ="UTF-8"/>	
-
-		<!--ova raboti, mozes da go koristis <link rel="stylesheet" type="text/css" href="assets/css/proba.css"> -->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-		<script src="assets/js/procenka.js"></script>
-		
-		<link href="assets/css/bootstrap.min.css" rel="stylesheet" media="screen"/>
-		
-	</head>
-	
-	<body>
 	<?php 
 	
 		$motorika = array(
@@ -39,7 +25,7 @@
 		$attributes = array('name' => 'form', 'id' => 'form', 'onsubmit' => 'return test(this);', 'class' => 'form');			
 		
 		
-		echo form_open('controller_klienti_main/dodadi_procenka_klient/5', $attributes);
+		echo form_open('controller_klienti_main/post_prikaz_klienti/'.$id_klient, $attributes);
 			echo form_label("Проценката ја прави:	");
 			echo form_dropdown('vraboteni', $vraboteni)."		";
 			
@@ -118,7 +104,7 @@
 			
 			<?php }?>
 			
-			<input type="submit" name="vnesiProcenka" id="vnesiProcenka" value="Внеси проценка" />
+			<input type="submit" name="dodadiProcenka" id="dodadiProcenka" value="Внеси проценка" />
 			
 		<?php echo form_close();?>				
 
@@ -162,12 +148,3 @@
 	</div><!-- /.modal -->
 
 			
-	<script src="assets/js/bootstrap.min.js"></script>
-	
-	<script src="//code.jquery.com/jquery.js"></script>
-			
-			
-			
-	</body>
-</html>
-

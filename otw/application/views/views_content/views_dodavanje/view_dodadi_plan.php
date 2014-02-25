@@ -1,17 +1,4 @@
-<html>
-
-	<head>
-		<meta http-equiv ="Content-Type" content = "text/html" charset ="UTF-8"/>
-		
-		
-		<script>
-
-		</script>
-		
-	</head>
-
-	
-	<body>				
+			
 			
 		<h1>Индивидуален план</h1>
 		
@@ -26,7 +13,7 @@
 		$attributes = array('name' => 'form', 'id' => 'form', 'class' => 'form');	
 		
 
-		echo form_open('controller_klienti_main/dodadi_plan_klient/4', $attributes);
+		echo form_open('controller_klienti_main/post_prikaz_klienti/'.$id_klient, $attributes);
 			
 			echo form_label("Планот го прави:	");
 			echo form_dropdown('vraboteni', $vraboteni)."		";
@@ -67,6 +54,3 @@
 			<input type="submit" name="dodadiPlan" id="dodadiPlan" value="Додади план">
 		<?php echo form_close();?>
 	
-	</body>
-
-</html>

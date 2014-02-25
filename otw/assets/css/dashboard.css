@@ -120,5 +120,9 @@ body {
     padding-right:5px;
     padding-left:20px;
 }
+.pre-scrollable {
+  max-height: 500px;
+  overflow-y: scroll;
+}
 
 
