@@ -145,8 +145,7 @@ class Model_post_formulari extends CI_Model{
 	}
 	
 	
-<<<<<<< HEAD
-=======
+
 	public function update_dnevno_sledenje($data, $id) {
 		$this->db->where ( 'id_poseta', $id );
 		$result = $this->db->update ( 'poseta', $data );
@@ -191,7 +190,7 @@ class Model_post_formulari extends CI_Model{
 	}
 	
 
->>>>>>> origin/matej_branch
+
 }
 
 
