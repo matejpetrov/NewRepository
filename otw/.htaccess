@@ -1,9 +1,6 @@
     RewriteEngine on
-<<<<<<< HEAD
-    RewriteBase /otw/
-=======
+
     RewriteBase /GitHub/NewRepository/otw
->>>>>>> origin/matej_branch
     # Hide the application and system directories by redirecting the request to index.php
     RewriteRule ^(application|system|\.svn) index.php/$1 [L]
     RewriteCond %{REQUEST_FILENAME} !-f

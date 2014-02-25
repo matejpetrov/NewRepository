@@ -14,11 +14,12 @@
 | path to your installation.
 |
 */
-<<<<<<< HEAD
-$config['base_url']	= 'http://localhost/otw/';
-=======
+//SOFIJA, pisi si go tvoeto base_url, a moeto stavi go vo komentar za odma samo copy paste da mu napravam
+//$config['base_url']	= 'http://localhost/otw/';
+
+
 $config['base_url']	= 'http://localhost/GitHub/NewRepository/otw/';
->>>>>>> origin/matej_branch
+
 
 /*
 |--------------------------------------------------------------------------
